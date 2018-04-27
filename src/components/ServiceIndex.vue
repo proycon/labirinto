@@ -1,5 +1,8 @@
 <template>
   <container width="100%">
+      <div id="toolbar">
+          <enhanced-check-group :label="interface_labels" :value="interfaces" inline="yes" rounded="yes"></enhanced-check-group>
+      </div>
     <grid horizontal="center" vertical="middle" wrap="wrap">
       <grid-item size="1/4" v-for="tool in tools" :key="tool.identifier" class="tool">
           <h2>{{tool.name}}</h2>
@@ -18,6 +21,7 @@ import Vue from 'vue'
 import Container from 'vue-fraction-grid/components/Container'
 import Grid from 'vue-fraction-grid/components/Grid'
 import GridItem from 'vue-fraction-grid/components/GridItem'
+import { EnhancedCheckGroup } from 'vue-enhanced-check'
 
 const config = {
   container: '1020px',
@@ -33,11 +37,13 @@ export default {
   components: {
     Container: Vue.extend({ extends: Container, config }),
     Grid: Vue.extend({ extends: Grid, config }),
-    GridItem: Vue.extend({ extends: GridItem, config })
+    GridItem: Vue.extend({ extends: GridItem, config }),
+    EnhancedCheckGroup
   },
   data () {
     return {
-      identifiers: [],
+      interface_labels: [ "Web Application", "Webservice", "Command line tool", "Library" ],
+      interfaces: [ "wui", "rest", "cli", "lib" ],
       registry: {},
       registry_url: "http://mhysa.anaproy.nl:8080/metadata.json",
       tools: []
@@ -70,6 +76,10 @@ li {
 }
 a {
   color: #42b983;
+}
+div#toolbar {
+    width: 100%;
+    text-align: center;
 }
 div.tool {
     border: 1px solid #444;
