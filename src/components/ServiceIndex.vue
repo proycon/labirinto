@@ -1,15 +1,23 @@
 <template>
   <container width="100%">
       <div id="toolbar">
-          <enhanced-check-group :label="interface_labels" :value="interfaces" inline="yes" rounded="yes"></enhanced-check-group>
+          <enhanced-check-group v-model="enabled_interfaces" :label="interface_labels" :value="interfaces" inline="yes" rounded="yes"></enhanced-check-group>
       </div>
     <grid horizontal="center" vertical="middle" wrap="wrap">
-      <grid-item size="1/4" v-for="tool in tools" :key="tool.identifier" class="tool">
-          <h2>{{tool.name}}</h2>
+      <grid-item size="1/3" v-for="tool in tools" v-if="matchTool(tool)" :key="tool.identifier" class="tool">
+          <h2>{{tool.name}} <span class="version">{{tool.version}}</span></h2>
           <ul class="authors">
               <li v-for="author in tool.author" :key="author.familyName">{{author.givenName}} {{author.familyName}}</li>
           </ul>
           <div class="description">{{tool.description}}</div>
+          <ul class="properties">
+              <li v-if="tool.url"><icon name="home"></icon>&nbsp;<a :href="tool.url">Website</a></li>
+              <li v-if="tool.codeRepository"><icon name="code"></icon>&nbsp;<a :href="tool.codeRepository">Source code</a></li>
+              <li v-if="tool.license" class="license"><icon name="copyright" flip="horizontal" :label="tool.license"></icon>&nbsp;<span>{{tool.license}}</span></li>
+          </ul>
+          <div class="entrypoints">
+              <button v-for="entrypoint in tool.entryPoints" v-if="matchEntrypoint(entrypoint)"  :key="entrypoint.urlTemplate">{{entrypoint.urlTemplate}}</button>
+          </div>
       </grid-item>
     </grid>
   </container>
@@ -22,6 +30,8 @@ import Container from 'vue-fraction-grid/components/Container'
 import Grid from 'vue-fraction-grid/components/Grid'
 import GridItem from 'vue-fraction-grid/components/GridItem'
 import { EnhancedCheckGroup } from 'vue-enhanced-check'
+import 'vue-awesome/icons'
+import Icon from 'vue-awesome/components/Icon'
 
 const config = {
   container: '1020px',
@@ -38,12 +48,14 @@ export default {
     Container: Vue.extend({ extends: Container, config }),
     Grid: Vue.extend({ extends: Grid, config }),
     GridItem: Vue.extend({ extends: GridItem, config }),
-    EnhancedCheckGroup
+    EnhancedCheckGroup,
+    Icon
   },
   data () {
     return {
-      interface_labels: [ "Web Application", "Webservice", "Command line tool", "Library" ],
-      interfaces: [ "wui", "rest", "cli", "lib" ],
+      interface_labels: [ "Web Applications", "Webservices", "Command line tools", "Programming Libraries" ],
+      interfaces: [ "WUI", "REST", "CLI", "LIB" ],
+      enabled_interfaces: [ "WUI", "REST" ],
       registry: {},
       registry_url: "http://mhysa.anaproy.nl:8080/metadata.json",
       tools: []
@@ -57,6 +69,34 @@ export default {
           })
           this.tools = Object.keys(this.registry).sort().map(identifier => this.registry[identifier]);
       })
+  },
+  methods: {
+      matchTool: function (tool) {
+          if (tool.interfaceType) {
+              if (this.enabled_interfaces.includes(tool.interfaceType)) {
+                  return true;
+              }
+          }
+          if (tool.entryPoints) {
+              var found = false;
+              tool.entryPoints.forEach(entrypoint => {
+                  if (this.matchEntrypoint(entrypoint)) {
+                      found = true;
+                      return;
+                  }
+              });
+              if (found) return true;
+          }
+          return false
+      },
+      matchEntrypoint: function (entrypoint) {
+          if (entrypoint.interfaceType) {
+              if (this.enabled_interfaces.includes(entrypoint.interfaceType)) {
+                  return true
+              }
+          }
+          return false
+      }
   }
 }
 </script>
@@ -94,5 +134,13 @@ div.tool:hover {
 }
 div.tool .authors li {
   font-style: italic;
+}
+div.tool span.version {
+    font-weight: normal;
+    font-size: 60%;
+    font-style: italic;
+}
+div.tool .license span {
+    font-size: 65%;
 }
 </style>
