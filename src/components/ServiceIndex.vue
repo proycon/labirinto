@@ -127,7 +127,7 @@ export default {
           }
           return false
       },
-      getLicense: function(tool) {
+      getLicense: function (tool) {
           if ((tool.license) && (tool.license !== null)) {
               var license = "";
               if (tool.license.constructor === Object) {
@@ -137,8 +137,8 @@ export default {
               } else if (tool.license.constructor === String) {
                   license = tool.license
               }
-              license = license.replace("OSI Approved :: ","")
-              license = license.replace("https://spdx.org/licenses/","")
+              license = license.replace("OSI Approved :: ", "")
+              license = license.replace("https://spdx.org/licenses/", "")
               return license
           }
           return "";
