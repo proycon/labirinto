@@ -7,7 +7,7 @@
       <grid-item size="1/3" v-for="tool in showtools" :key="tool.identifier" class="tool">
           <h2>{{tool.name}} <span class="version">{{tool.version}}</span></h2>
           <ul class="authors">
-              <li v-for="author in tool.author" :key="author.familyName">{{author.givenName}} {{author.familyName}}</li>
+              <li v-for="(author, authorindex) in tool.author" :key="author.familyName">{{author.givenName}} {{author.familyName}}<span v-if="authorindex < tool.author.length - 1">,&nbsp;</span></li>
           </ul>
           <div class="description">{{tool.description}}</div>
           <ul class="properties">
@@ -40,6 +40,9 @@
                 <tt v-if="entrypoint.name">{{entrypoint.name}}</tt>
                 <a v-if="entrypoint.interfaceType == 'WUI'" :href="entrypoint.urlTemplate">Open {{tool.name}} in browser<span class="url">{{entrypoint.urlTemplate}}</span></a>
                 <a v-if="entrypoint.interfaceType == 'REST'" :href="entrypoint.urlTemplate">Webservice <span class="url">{{entrypoint.urlTemplate}}</span></a>
+                <template v-if="entrypoint.interfaceType == 'REST' && entrypoint.specification">
+                    <icon name="book"></icon> <a :href="entrypoint.specification">Webservice specification</span></a>
+                </template>
                 <span v-if="entrypoint.description" class="description">{{entrypoint.description}}</span>
               </li>
           </ul>
