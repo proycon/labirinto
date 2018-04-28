@@ -14,21 +14,21 @@
               <li v-if="tool.url"><icon name="home"></icon>&nbsp;<a :href="tool.url">Website</a></li>
               <li v-if="tool.codeRepository"><icon name="code"></icon>&nbsp;<a :href="tool.codeRepository">Source code</a></li>
               <li v-if="tool.issueTracker"><icon name="bug"></icon>&nbsp;<a :href="tool.issueTracker">Issue Tracker</a></li>
-              <li v-if="tool.license" class="license"><icon name="copyright" flip="horizontal" :label="tool.license"></icon>&nbsp;<span>{{tool.license}}</span></li>
+              <li v-if="tool.license" class="license"><icon name="copyright" flip="horizontal" :label="tool.license"></icon>&nbsp;<span>{{getLicense(tool)}}</span></li>
               <template v-if="tool.programmingLanguage">
-                  <li v-if="matchProgLangs(tool,'python')" class="proglang"><icon name="python"></icon>&nbsp; <span>Python</span></li>
-                  <li v-if="matchProgLangs(tool,'cython')" class="proglang"><icon name="python"></icon>&nbsp; <span>Cython</span></li>
-                  <li v-if="matchProgLangs(tool,'javascript')" class="proglang"><icon name="js"></icon>&nbsp; <span>Javascript</span></li>
-                  <li v-if="matchProgLangs(tool,'java')" class="proglang"><icon name="java"></icon>&nbsp; <span>Java</span></li>
+                  <li v-if="matchProgLangs(tool,'python')" class="proglang"><icon name="brands/python"></icon>&nbsp; <span>Python</span></li>
+                  <li v-if="matchProgLangs(tool,'cython')" class="proglang"><icon name="brands/python"></icon>&nbsp; <span>Cython</span></li>
+                  <li v-if="matchProgLangs(tool,'javascript')" class="proglang"><icon name="brands/js"></icon>&nbsp; <span>Javascript</span></li>
+                  <li v-if="matchProgLangs(tool,'java')" class="proglang"><icon name="brands/java"></icon>&nbsp; <span>Java</span></li>
                   <li v-if="matchProgLangs(tool,'c++')" class="proglang"><icon name="closed-captioning"></icon>&nbsp; <span>C++</span></li>
                   <li v-else-if="matchProgLangs(tool,'cpp')" class="proglang"><icon name="closed-captioning"></icon>&nbsp; <span>C++</span></li>
-                  <li v-if="matchProgLangs(tool,'php')" class="proglang"><icon name="php"></icon>&nbsp; <span>PHP</span></li>
+                  <li v-if="matchProgLangs(tool,'php')" class="proglang"><icon name="brands/php"></icon>&nbsp; <span>PHP</span></li>
                   <li v-if="matchProgLangs(tool,'bash')" class="proglang"><icon name="terminal"></icon>&nbsp; <span>Shell</span></li>
                   <li v-else-if="matchProgLangs(tool,'shell')" class="proglang"><icon name="terminal"></icon>&nbsp; <span>Shell</span></li>
-                  <li v-if="matchProgLangs(tool,'erlang')" class="proglang"><icon name="erlang"></icon>&nbsp; <span>Erlang</span></li>
+                  <li v-if="matchProgLangs(tool,'erlang')" class="proglang"><icon name="brands/erlang"></icon>&nbsp; <span>Erlang</span></li>
                   <li v-if="matchProgLangs(tool,'r')" class="proglang"><icon name="register"></icon>&nbsp; <span>R</span></li>
-                  <li v-if="matchProgLangs(tool,'perl')" class="proglang"><icon name="product-hunt"></icon>&nbsp; <span>Perl</span></li>
-                  <li v-if="matchProgLangs(tool,'go')" class="proglang"><icon name="google"></icon>&nbsp; <span>Go</span></li>
+                  <li v-if="matchProgLangs(tool,'perl')" class="proglang"><icon name="brands/product-hunt"></icon>&nbsp; <span>Perl</span></li>
+                  <li v-if="matchProgLangs(tool,'go')" class="proglang"><icon name="brands/google"></icon>&nbsp; <span>Go</span></li>
                   <li v-if="matchProgLangs(tool,'lua')" class="proglang"><icon name="moon"></icon>&nbsp; <span>Lua</span></li>
               </template>
           </ul>
@@ -126,6 +126,22 @@ export default {
               }
           }
           return false
+      },
+      getLicense: function(tool) {
+          if ((tool.license) && (tool.license !== null)) {
+              var license = "";
+              if (tool.license.constructor === Object) {
+                  license = tool.license.name
+              } else if (tool.license.constructor === Array) {
+                  license = tool.license.join(" ")
+              } else if (tool.license.constructor === String) {
+                  license = tool.license
+              }
+              license = license.replace("OSI Approved :: ","")
+              license = license.replace("https://spdx.org/licenses/","")
+              return license
+          }
+          return "";
       },
       matchProgLangs: function (tool, lang) {
           if ((tool.programmingLanguage) && (tool.programmingLanguage !== null)) {
