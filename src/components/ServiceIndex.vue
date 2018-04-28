@@ -1,10 +1,10 @@
 <template>
   <container width="100%">
-      <div id="toolbar">
-          <enhanced-check-group v-model="enabled_interfaces" :label="interface_labels" :value="interfaces" inline="yes" rounded="yes"></enhanced-check-group>
-      </div>
-    <grid horizontal="center" vertical="middle" wrap="wrap">
-      <grid-item size="1/3" v-for="tool in tools" v-if="matchTool(tool)" :key="tool.identifier" class="tool">
+    <div id="toolbar">
+        <enhanced-check-group v-model="enabled_interfaces" :label="interface_labels" :value="interfaces" inline rounded></enhanced-check-group>
+    </div>
+    <grid v-if="registry_loaded" horizontal="center" vertical="middle" wrap="wrap">
+      <grid-item size="1/3" v-for="tool in showtools" :key="tool.identifier" class="tool">
           <h2>{{tool.name}} <span class="version">{{tool.version}}</span></h2>
           <ul class="authors">
               <li v-for="author in tool.author" :key="author.familyName">{{author.givenName}} {{author.familyName}}</li>
@@ -13,11 +13,20 @@
           <ul class="properties">
               <li v-if="tool.url"><icon name="home"></icon>&nbsp;<a :href="tool.url">Website</a></li>
               <li v-if="tool.codeRepository"><icon name="code"></icon>&nbsp;<a :href="tool.codeRepository">Source code</a></li>
+              <li v-if="tool.issueTracker"><icon name="bug"></icon>&nbsp;<a :href="tool.issueTracker">Issue Tracker</a></li>
               <li v-if="tool.license" class="license"><icon name="copyright" flip="horizontal" :label="tool.license"></icon>&nbsp;<span>{{tool.license}}</span></li>
           </ul>
-          <div class="entrypoints">
-              <button v-for="entrypoint in tool.entryPoints" v-if="matchEntrypoint(entrypoint)"  :key="entrypoint.urlTemplate">{{entrypoint.urlTemplate}}</button>
-          </div>
+          <ul class="entrypoints">
+              <li v-for="entrypoint in tool.entryPoints" v-if="matchEntrypoint(entrypoint)"  :key="entrypoint.urlTemplate" :class="entrypoint.interfaceType == 'WUI' ? 'actionable' : 'inactionable'">
+                <icon v-if="entrypoint.interfaceType == 'WUI'" name="sign-in-alt"></icon>
+                <icon v-else-if="entrypoint.interfaceType == 'REST'" name="cog"></icon>
+                <icon v-else-if="entrypoint.interfaceType == 'CLI'" name="terminal"></icon>
+                <tt v-if="entrypoint.name">{{entrypoint.name}}</tt>
+                <a v-if="entrypoint.interfaceType == 'WUI'" :href="entrypoint.urlTemplate">Open {{tool.name}} in browser<span class="url">{{entrypoint.urlTemplate}}</span></a>
+                <a v-if="entrypoint.interfaceType == 'REST'" :href="entrypoint.urlTemplate">Webservice <span class="url">{{entrypoint.urlTemplate}}</span></a>
+                <span v-if="entrypoint.description" class="description">{{entrypoint.description}}</span>
+              </li>
+          </ul>
       </grid-item>
     </grid>
   </container>
@@ -34,7 +43,7 @@ import 'vue-awesome/icons'
 import Icon from 'vue-awesome/components/Icon'
 
 const config = {
-  container: '1020px',
+  container: '90%',
   gutter: '24px',
   approach: 'desktop-first',
   breakpoints: {
@@ -58,7 +67,7 @@ export default {
       enabled_interfaces: [ "WUI", "REST" ],
       registry: {},
       registry_url: "http://mhysa.anaproy.nl:8080/metadata.json",
-      tools: []
+      registry_loaded: false
     }
   },
   created () {
@@ -66,9 +75,15 @@ export default {
           //add software
           response.data['@graph'].forEach(tool => {
               this.registry[tool.identifier] = tool
-          })
-          this.tools = Object.keys(this.registry).sort().map(identifier => this.registry[identifier]);
+          });
+          this.registry_loaded = true;
+          this.$forceUpdate();
       })
+  },
+  computed: {
+      showtools: function () {
+          return Object.keys(this.registry).sort().map(identifier => this.registry[identifier]).filter(this.matchTool, this.enabled_interfaces);
+      }
   },
   methods: {
       matchTool: function (tool) {
@@ -77,12 +92,11 @@ export default {
                   return true;
               }
           }
-          if (tool.entryPoints) {
+          if (tool.entryPoints !== undefined) {
               var found = false;
               tool.entryPoints.forEach(entrypoint => {
                   if (this.matchEntrypoint(entrypoint)) {
                       found = true;
-                      return;
                   }
               });
               if (found) return true;
@@ -130,7 +144,7 @@ div.tool {
     font-size: 80%;
 }
 div.tool:hover {
-    background: #ddd;
+    background: #eee;
 }
 div.tool .authors li {
   font-style: italic;
@@ -142,5 +156,37 @@ div.tool span.version {
 }
 div.tool .license span {
     font-size: 65%;
+}
+ul.entrypoints li {
+    display: block;
+    background: #ddd;
+    padding: 2px;
+    border-radius: 5px;
+    margin-bottom: 2px;
+}
+ul.entrypoints li.actionable {
+    background: #a8cba9;
+}
+ul.entrypoints li a {
+    color: #30503a;
+    font-weight: bold;
+    text-decoration: none;
+}
+ul.entrypoints li.actionable:hover {
+    background: #cbcba8;
+}
+ul.entrypoints li.actionable:hover a {
+    color: black;
+}
+ul.entrypoints span.url {
+    display: block;
+    font-weight: normal;
+    font-size: 60%;
+    font-family: monospace;
+    font-style: italic;
+}
+ul.entrypoints span.description {
+    display: block;
+    font-style: italic;
 }
 </style>
