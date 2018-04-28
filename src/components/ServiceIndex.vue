@@ -15,6 +15,22 @@
               <li v-if="tool.codeRepository"><icon name="code"></icon>&nbsp;<a :href="tool.codeRepository">Source code</a></li>
               <li v-if="tool.issueTracker"><icon name="bug"></icon>&nbsp;<a :href="tool.issueTracker">Issue Tracker</a></li>
               <li v-if="tool.license" class="license"><icon name="copyright" flip="horizontal" :label="tool.license"></icon>&nbsp;<span>{{tool.license}}</span></li>
+              <template v-if="tool.programmingLanguage">
+                  <li v-if="matchProgLangs(tool,'python')" class="proglang"><icon name="python"></icon>&nbsp; <span>Python</span></li>
+                  <li v-if="matchProgLangs(tool,'cython')" class="proglang"><icon name="python"></icon>&nbsp; <span>Cython</span></li>
+                  <li v-if="matchProgLangs(tool,'javascript')" class="proglang"><icon name="js"></icon>&nbsp; <span>Javascript</span></li>
+                  <li v-if="matchProgLangs(tool,'java')" class="proglang"><icon name="java"></icon>&nbsp; <span>Java</span></li>
+                  <li v-if="matchProgLangs(tool,'c++')" class="proglang"><icon name="closed-captioning"></icon>&nbsp; <span>C++</span></li>
+                  <li v-else-if="matchProgLangs(tool,'cpp')" class="proglang"><icon name="closed-captioning"></icon>&nbsp; <span>C++</span></li>
+                  <li v-if="matchProgLangs(tool,'php')" class="proglang"><icon name="php"></icon>&nbsp; <span>PHP</span></li>
+                  <li v-if="matchProgLangs(tool,'bash')" class="proglang"><icon name="terminal"></icon>&nbsp; <span>Shell</span></li>
+                  <li v-else-if="matchProgLangs(tool,'shell')" class="proglang"><icon name="terminal"></icon>&nbsp; <span>Shell</span></li>
+                  <li v-if="matchProgLangs(tool,'erlang')" class="proglang"><icon name="erlang"></icon>&nbsp; <span>Erlang</span></li>
+                  <li v-if="matchProgLangs(tool,'r')" class="proglang"><icon name="register"></icon>&nbsp; <span>R</span></li>
+                  <li v-if="matchProgLangs(tool,'perl')" class="proglang"><icon name="product-hunt"></icon>&nbsp; <span>Perl</span></li>
+                  <li v-if="matchProgLangs(tool,'go')" class="proglang"><icon name="google"></icon>&nbsp; <span>Go</span></li>
+                  <li v-if="matchProgLangs(tool,'lua')" class="proglang"><icon name="moon"></icon>&nbsp; <span>Lua</span></li>
+              </template>
           </ul>
           <ul class="entrypoints">
               <li v-for="entrypoint in tool.entryPoints" v-if="matchEntrypoint(entrypoint)"  :key="entrypoint.urlTemplate" :class="entrypoint.interfaceType == 'WUI' ? 'actionable' : 'inactionable'">
@@ -110,6 +126,21 @@ export default {
               }
           }
           return false
+      },
+      matchProgLangs: function (tool, lang) {
+          if ((tool.programmingLanguage) && (tool.programmingLanguage !== null)) {
+              var pattern = " ";
+              if (tool.programmingLanguage.constructor === Object) {
+                  pattern += tool.programmingLanguage.name
+              } else if (tool.programmingLanguage.constructor === Array) {
+                  pattern += tool.programmingLanguage.join(" ")
+              } else if (tool.programmingLanguage.constructor === String) {
+                  pattern += tool.programmingLanguage
+              }
+              pattern += " ";
+              return pattern.toLowerCase().includes(' ' + lang + ' ');
+          }
+          return false;
       }
   }
 }
@@ -154,7 +185,7 @@ div.tool span.version {
     font-size: 60%;
     font-style: italic;
 }
-div.tool .license span {
+div.tool .license span, div.tool .proglang span {
     font-size: 65%;
 }
 ul.entrypoints li {
