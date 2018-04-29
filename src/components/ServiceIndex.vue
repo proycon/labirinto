@@ -7,8 +7,13 @@
     <grid v-if="registry_loaded" horizontal="center" vertical="middle" wrap="wrap">
       <grid-item size="1/4" v-for="tool in showtools" :key="tool.identifier" class="tool">
           <h2>{{tool.name}} <span class="version">{{tool.version}}</span></h2>
-          <ul class="authors">
-              <li v-for="(author, authorindex) in tool.author" :key="author.familyName">{{author.givenName}} {{author.familyName}}<span v-if="authorindex < tool.author.length - 1">,&nbsp;</span></li>
+          <ul v-if="tool.author" class="authors">
+              <li v-for="(author, authorindex) in tool.author" v-if="author.familyName" :key="author.familyName">{{author.givenName}} {{author.familyName}}<span v-if="authorindex < tool.author.length - 1">,&nbsp;</span></li>
+          </ul>
+          <ul class="affiliations">
+              <li v-if="tool.producer">{{getOrganization(tool.producer)}}</li>
+              <li v-else-if="tool.publisher">{{getOrganization(tool.publisher)}}</li>
+              <li v-if="tool.funder">{{getOrganization(tool.publisher)}}</li>
           </ul>
           <div class="description">{{tool.description}}</div>
           <ul class="properties">
@@ -125,7 +130,7 @@ export default {
                   }
               });
               if (found) return true;
-              if (tool.entryPoints.length == 0) {
+              if (tool.entryPoints.length === 0) {
                   return this.enabled_interfaces.includes("UNKNOWN");
               }
           } else {
@@ -162,7 +167,7 @@ export default {
               var audience = "";
               if (tool.audience.constructor === Array) {
                   var audiencelist = [];
-                  tool.audience.forEach(function(a){
+                  tool.audience.forEach(function (a) {
                       audiencelist.push(a.audienceType);
                   });
                  audience = audiencelist.join("; ")
@@ -174,6 +179,27 @@ export default {
               return audience
           }
           return "";
+      },
+      getOrganization: function (org, skiplocation) {
+          if (org === undefined) {
+              return "";
+          }
+          if (org.constructor === String) {
+              return org;
+          }
+          if ((org.location) && (!skiplocation)) {
+              if (org.parentOrganization) {
+                  return org.name + ", " + this.getOrganization(org.parentOrganization, true) + ", " + org.location.name;
+              } else {
+                  return org.name + ", " + org.location.name;
+              }
+          } else {
+              if (org.parentOrganization) {
+                  return org.name + ", " + this.getOrganization(org.parentOrganization, false);
+              } else {
+                  return org.name;
+              }
+          }
       },
       matchProgLangs: function (tool, lang) {
           if ((tool.programmingLanguage) && (tool.programmingLanguage !== null)) {
@@ -274,6 +300,11 @@ ul.entrypoints span.url {
 ul.entrypoints span.description {
     display: block;
     font-style: italic;
+}
+ul.affiliations li {
+    display: block;
+    color: #85a989;
+    font-size: 80%;
 }
 #toolbar  {
     width: 100%;
