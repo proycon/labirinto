@@ -12,10 +12,11 @@
           </ul>
           <div class="description">{{tool.description}}</div>
           <ul class="properties">
-              <li v-if="tool.url"><icon name="home"></icon>&nbsp;<a :href="tool.url">Website</a></li>
-              <li v-if="tool.codeRepository"><icon name="code"></icon>&nbsp;<a :href="tool.codeRepository">Source code</a></li>
-              <li v-if="tool.issueTracker"><icon name="bug"></icon>&nbsp;<a :href="tool.issueTracker">Issue Tracker</a></li>
-              <li v-if="tool.license" class="license"><icon name="copyright" flip="horizontal" :label="tool.license"></icon>&nbsp;<span>{{getLicense(tool)}}</span></li>
+              <li v-if="tool.url" hint="Project website"><icon name="home"></icon>&nbsp;<a :href="tool.url">Website</a></li>
+              <li v-if="tool.codeRepository" hint="Source code repository"><icon name="code"></icon>&nbsp;<a :href="tool.codeRepository">Source code</a></li>
+              <li v-if="tool.issueTracker" hint="Issue Tracker"><icon name="bug"></icon>&nbsp;<a :href="tool.issueTracker">Issue Tracker</a></li>
+              <li v-if="tool.license" class="license" hint="License"><icon name="copyright" flip="horizontal" :label="tool.license"></icon>&nbsp;<span>{{getLicense(tool)}}</span></li>
+              <li v-if="tool.audience" class="audience" hint="Intended Audience"><icon name="users" :label="tool.audience"></icon>&nbsp;<span>{{getAudience(tool)}}</span></li>
               <template v-if="tool.programmingLanguage">
                   <li v-if="matchProgLangs(tool,'python')" class="proglang"><icon name="brands/python"></icon>&nbsp; <span>Python</span></li>
                   <li v-if="matchProgLangs(tool,'cython')" class="proglang"><icon name="brands/python"></icon>&nbsp; <span>Cython</span></li>
@@ -32,6 +33,9 @@
                   <li v-if="matchProgLangs(tool,'go')" class="proglang"><icon name="brands/google"></icon>&nbsp; <span>Go</span></li>
                   <li v-if="matchProgLangs(tool,'lua')" class="proglang"><icon name="moon"></icon>&nbsp; <span>Lua</span></li>
               </template>
+          </ul>
+          <ul v-if="tool.keywords" class="keywords">
+              <li v-for="keyword in tool.keywords" :key="keyword">{{keyword}}</li>
           </ul>
           <ul class="entrypoints">
               <li v-for="entrypoint in tool.entryPoints" v-if="matchEntrypoint(entrypoint)"  :key="entrypoint.urlTemplate" :class="entrypoint.interfaceType == 'WUI' ? 'actionable' : 'inactionable'">
@@ -83,8 +87,8 @@ export default {
   },
   data () {
     return {
-      interface_labels: [ "Web Applications", "Webservices", "Command line tools", "Programming Libraries" ],
-      interfaces: [ "WUI", "REST", "CLI", "LIB" ],
+      interface_labels: [ "Web Applications", "Webservices", "Command line tools", "Programming Libraries", "Unspecified" ],
+      interfaces: [ "WUI", "REST", "CLI", "LIB", "UNKNOWN" ],
       enabled_interfaces: [ "WUI", "REST" ],
       registry: {},
       registry_url: "http://mhysa.anaproy.nl:8080/metadata.json",
@@ -121,8 +125,13 @@ export default {
                   }
               });
               if (found) return true;
+              if (tool.entryPoints.length == 0) {
+                  return this.enabled_interfaces.includes("UNKNOWN");
+              }
+          } else {
+              return this.enabled_interfaces.includes("UNKNOWN");
           }
-          return false
+          return false;
       },
       matchEntrypoint: function (entrypoint) {
           if (entrypoint.interfaceType) {
@@ -130,7 +139,7 @@ export default {
                   return true
               }
           }
-          return false
+          return false;
       },
       getLicense: function (tool) {
           if ((tool.license) && (tool.license !== null)) {
@@ -145,6 +154,24 @@ export default {
               license = license.replace("OSI Approved :: ", "")
               license = license.replace("https://spdx.org/licenses/", "")
               return license
+          }
+          return "";
+      },
+      getAudience: function (tool) {
+          if ((tool.audience) && (tool.audience !== null)) {
+              var audience = "";
+              if (tool.audience.constructor === Array) {
+                  var audiencelist = [];
+                  tool.audience.forEach(function(a){
+                      audiencelist.push(a.audienceType);
+                  });
+                 audience = audiencelist.join("; ")
+              } else if (tool.audience.constructor === Object) {
+                  audience = tool.audience.audienceType
+              } else if (tool.audience.constructor === String) {
+                  audience = tool.audience
+              }
+              return audience
           }
           return "";
       },
@@ -209,8 +236,12 @@ div.tool span.version {
     font-size: 60%;
     font-style: italic;
 }
-div.tool .license span, div.tool .proglang span {
+div.tool .license span, div.tool .proglang span, div.tool .audience span {
     font-size: 65%;
+}
+div.tool ul.keywords li {
+    font-size: 65%;
+    color: #8350a7;
 }
 ul.entrypoints li {
     display: block;
