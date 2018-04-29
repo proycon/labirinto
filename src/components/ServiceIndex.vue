@@ -8,12 +8,18 @@
       <grid-item size="1/4" v-for="tool in showtools" :key="tool.identifier" class="tool">
           <h2>{{tool.name}} <span class="version">{{tool.version}}</span></h2>
           <ul v-if="tool.author" class="authors">
-              <li v-for="(author, authorindex) in tool.author" v-if="author.familyName" :key="author.familyName">{{author.givenName}} {{author.familyName}}<span v-if="authorindex < tool.author.length - 1">,&nbsp;</span></li>
+              <li v-for="(author, authorindex) in getAuthors(tool)" :key="author">{{author}}<span v-if="authorindex < getAuthors(tool).length - 1">,&nbsp;</span></li>
           </ul>
           <ul class="affiliations">
-              <li v-if="tool.producer">{{getOrganization(tool.producer)}}</li>
-              <li v-else-if="tool.publisher">{{getOrganization(tool.publisher)}}</li>
-              <li v-if="tool.funder">{{getOrganization(tool.publisher)}}</li>
+              <template v-if="tool.producer">
+                  <li v-for="organization in getOrganizations(tool, 'producer')" :key="organization">{{organization}}</li>
+              </template>
+              <template v-if="tool.publisher">
+                  <li v-for="organization in getOrganizations(tool, 'publisher')" :key="organization">{{organization}}</li>
+              </template>
+              <template v-if="tool.funder">
+                  <li v-for="organization in getOrganizations(tool, 'funder')" :key="organization">{{organization}}</li>
+              </template>
           </ul>
           <div class="description">{{tool.description}}</div>
           <ul class="properties">
@@ -176,6 +182,17 @@ export default {
           var values = this.getPropertyValues(obj, property, propcallback, valuecallback);
           return values.join("; ");
       },
+      getAuthors: function (tool) {
+          return this.getPropertyValues(tool, 'author', function (author) {
+             if ((author.givenName) && (author.familyName)) {
+                 return author.givenName + " " + author.familyName;
+             } else if (author.name) {
+                 return author.name;
+             } else {
+                 return "";
+             }
+          });
+      },
       getLicense: function (tool) {
           return this.getPropertyValue(tool, 'license', function (license) {
              return license.name;
@@ -191,26 +208,25 @@ export default {
              return audience.audienceType;
           })
       },
-      getOrganization: function (org, skiplocation) {
-          if (org === undefined) {
-              return "";
-          }
-          if (org.constructor === String) {
-              return org;
-          }
-          if ((org.location) && (!skiplocation)) {
-              if (org.parentOrganization) {
-                  return org.name + ", " + this.getOrganization(org.parentOrganization, true) + ", " + org.location.name;
-              } else {
-                  return org.name + ", " + org.location.name;
-              }
-          } else {
-              if (org.parentOrganization) {
-                  return org.name + ", " + this.getOrganization(org.parentOrganization, false);
-              } else {
-                  return org.name;
-              }
-          }
+      getOrganizations: function (tool, property) {
+          return this.getPropertyValues(tool, property, function (org) {
+              var labels = []
+              var locationparsed = false;
+              var first = true;
+              do {
+                  if (!first) {
+                      org = org.parentOrganization;
+                  } else {
+                      first = false;
+                  }
+                  labels.push(org.name);
+                  if ((org.location) && (!locationparsed)) {
+                      labels.push(org.location.name);
+                      locationparsed = true;
+                  }
+              } while (org.parentOrganization !== undefined);
+              return labels.join(", ")
+          })
       },
       matchProgLangs: function (tool, lang) {
           return this.getPropertyValues(tool, 'programmingLanguage', function (proglang) {
