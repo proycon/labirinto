@@ -146,39 +146,50 @@ export default {
           }
           return false;
       },
-      getLicense: function (tool) {
-          if ((tool.license) && (tool.license !== null)) {
-              var license = "";
-              if (tool.license.constructor === Object) {
-                  license = tool.license.name
-              } else if (tool.license.constructor === Array) {
-                  license = tool.license.join(" ")
-              } else if (tool.license.constructor === String) {
-                  license = tool.license
-              }
-              license = license.replace("OSI Approved :: ", "")
-              license = license.replace("https://spdx.org/licenses/", "")
-              return license
+      getPropertyValues: function (obj, property, propcallback, valuecallback) {
+          if (valuecallback === undefined) {
+              valuecallback = function (x) { return x; }
           }
-          return "";
+          var values = [];
+          if ((obj !== undefined) && (obj !== null) && (obj.hasOwnProperty(property))) {
+              if (obj[property].constructor === Object) {
+                  values.push(valuecallback(propcallback(obj[property])));
+              } else if (obj[property].constructor === Array) {
+                  obj[property].forEach(function (item) {
+                      if ((item !== undefined) && (item !== null)) {
+                          if (item.constructor === Object) {
+                              values.push(valuecallback(propcallback(item)));
+                          } else {
+                              values.push(valuecallback(item));
+                          }
+                      }
+                  });
+              } else {
+                  //String or number
+                  values.push(valuecallback(obj[property]))
+              }
+          }
+          return values
+      },
+      getPropertyValue: function (obj, property, propcallback, valuecallback) {
+          //get all values as one string
+          var values = this.getPropertyValues(obj, property, propcallback, valuecallback);
+          return values.join("; ");
+      },
+      getLicense: function (tool) {
+          return this.getPropertyValue(tool, 'license', function (license) {
+             return license.name;
+          }, function (license) {
+             license = license.replace("OSI Approved :: ", "")
+             license = license.replace("https://spdx.org/licenses/", "")
+             return license;
+          });
       },
       getAudience: function (tool) {
-          if ((tool.audience) && (tool.audience !== null)) {
-              var audience = "";
-              if (tool.audience.constructor === Array) {
-                  var audiencelist = [];
-                  tool.audience.forEach(function (a) {
-                      audiencelist.push(a.audienceType);
-                  });
-                 audience = audiencelist.join("; ")
-              } else if (tool.audience.constructor === Object) {
-                  audience = tool.audience.audienceType
-              } else if (tool.audience.constructor === String) {
-                  audience = tool.audience
-              }
-              return audience
-          }
-          return "";
+          return this.getPropertyValue(tool, 'audience', function (audience) {
+             //schema:Audience
+             return audience.audienceType;
+          })
       },
       getOrganization: function (org, skiplocation) {
           if (org === undefined) {
@@ -202,19 +213,12 @@ export default {
           }
       },
       matchProgLangs: function (tool, lang) {
-          if ((tool.programmingLanguage) && (tool.programmingLanguage !== null)) {
-              var pattern = " ";
-              if (tool.programmingLanguage.constructor === Object) {
-                  pattern += tool.programmingLanguage.name
-              } else if (tool.programmingLanguage.constructor === Array) {
-                  pattern += tool.programmingLanguage.join(" ")
-              } else if (tool.programmingLanguage.constructor === String) {
-                  pattern += tool.programmingLanguage
-              }
-              pattern += " ";
+          return this.getPropertyValues(tool, 'programmingLanguage', function (proglang) {
+              return proglang.name;
+          }).some(function (proglang) {
+              var pattern = " " + proglang.toLowerCase() + " ";
               return pattern.toLowerCase().includes(' ' + lang + ' ');
-          }
-          return false;
+          });
       }
   }
 }
