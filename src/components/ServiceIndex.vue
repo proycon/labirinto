@@ -1,10 +1,11 @@
 <template>
+  <div id="container">
+  <div id="toolbar">
+      <enhanced-check-group v-model="enabled_interfaces" :label="interface_labels" :value="interfaces" inline rounded></enhanced-check-group>
+  </div>
   <container width="100%">
-    <div id="toolbar">
-        <enhanced-check-group v-model="enabled_interfaces" :label="interface_labels" :value="interfaces" inline rounded></enhanced-check-group>
-    </div>
     <grid v-if="registry_loaded" horizontal="center" vertical="middle" wrap="wrap">
-      <grid-item size="1/3" v-for="tool in showtools" :key="tool.identifier" class="tool">
+      <grid-item size="1/4" v-for="tool in showtools" :key="tool.identifier" class="tool">
           <h2>{{tool.name}} <span class="version">{{tool.version}}</span></h2>
           <ul class="authors">
               <li v-for="(author, authorindex) in tool.author" :key="author.familyName">{{author.givenName}} {{author.familyName}}<span v-if="authorindex < tool.author.length - 1">,&nbsp;</span></li>
@@ -41,7 +42,7 @@
                 <a v-if="entrypoint.interfaceType == 'WUI'" :href="entrypoint.urlTemplate">Open {{tool.name}} in browser<span class="url">{{entrypoint.urlTemplate}}</span></a>
                 <a v-if="entrypoint.interfaceType == 'REST'" :href="entrypoint.urlTemplate">Webservice <span class="url">{{entrypoint.urlTemplate}}</span></a>
                 <template v-if="entrypoint.interfaceType == 'REST' && entrypoint.specification">
-                    <icon name="book"></icon> <a :href="entrypoint.specification">Webservice specification</span></a>
+                    <icon name="book"></icon> <a :href="entrypoint.specification">Webservice specification</a>
                 </template>
                 <span v-if="entrypoint.description" class="description">{{entrypoint.description}}</span>
               </li>
@@ -49,6 +50,7 @@
       </grid-item>
     </grid>
   </container>
+  </div>
 </template>
 
 <script>
@@ -168,7 +170,8 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 h1, h2 {
-  font-weight: normal;
+  font-weight: medium;
+  color: #384d3a;
 }
 ul {
   list-style-type: none;
@@ -179,14 +182,16 @@ li {
   margin: 0 10px;
 }
 a {
-  color: #42b983;
+  color: #384d3a;
 }
 div#toolbar {
     width: 100%;
     text-align: center;
+    margin: 0px;
 }
 div.tool {
-    border: 1px solid #444;
+    background: white;
+    border: 1px solid #85a989;
     border-radius: 20px;
     margin: 10px;
     margin-bottom: 20px;
@@ -194,7 +199,7 @@ div.tool {
     font-size: 80%;
 }
 div.tool:hover {
-    background: #eee;
+    background: #e9f3eb;
 }
 div.tool .authors li {
   font-style: italic;
@@ -215,7 +220,7 @@ ul.entrypoints li {
     margin-bottom: 2px;
 }
 ul.entrypoints li.actionable {
-    background: #a8cba9;
+    background: #85a989;
 }
 ul.entrypoints li a {
     color: #30503a;
@@ -238,5 +243,16 @@ ul.entrypoints span.url {
 ul.entrypoints span.description {
     display: block;
     font-style: italic;
+}
+#toolbar  {
+    width: 100%;
+    background: white;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+#container {
+    width: 100%;
+    margin: 0 0;
+    padding: 0 0;
 }
 </style>
