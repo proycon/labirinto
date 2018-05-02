@@ -1,6 +1,6 @@
 # labirinto
 
-> A virtual laberatory portal 
+> A virtual laboratory portal
 
 ## Build Setup
 

@@ -1,7 +1,7 @@
 <template>
   <div id="container">
   <div id="toolbar">
-      <enhanced-check-group v-model="enabled_interfaces" :label="interface_labels" :value="interfaces" inline rounded></enhanced-check-group>
+      <enhanced-check-group v-model="enabled_interfaces" :label="interface_labels" :value="interfaces" inline rounded combine></enhanced-check-group>
   </div>
   <container width="100%">
     <grid v-if="registry_loaded" horizontal="center" vertical="middle" wrap="wrap">
@@ -98,7 +98,7 @@ export default {
   },
   data () {
     return {
-      interface_labels: [ "Web Applications", "Webservices", "Command line tools", "Programming Libraries", "Unspecified" ],
+      interface_labels: [ "Web Applications", "Web Services", "Command line tools", "Programming Libraries", "Unspecified" ],
       interfaces: [ "WUI", "REST", "CLI", "LIB", "UNKNOWN" ],
       enabled_interfaces: [ "WUI", "REST" ],
       registry: {},
@@ -254,16 +254,14 @@ li {
   display: inline-block;
   margin: 0 10px;
 }
-a {
-  color: #384d3a;
-}
 div#toolbar {
     width: 100%;
     text-align: center;
     margin: 0px;
+    opacity: 0.8;
 }
 div.tool {
-    background: white;
+    background: #ffffff;
     border: 1px solid #85a989;
     border-radius: 20px;
     margin: 10px;
@@ -331,6 +329,7 @@ ul.affiliations li {
     background: white;
     padding-top: 5px;
     padding-bottom: 5px;
+    font-size: 80%;
 }
 #container {
     width: 100%;

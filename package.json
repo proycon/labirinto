@@ -1,7 +1,7 @@
 {
   "name": "labirinto",
   "version": "0.1.0",
-  "description": "A virtual laberatory portal ",
+  "description": "A virtual laboratory portal ",
   "author": "Maarten van Gompel <proycon@anaproy.nl>",
   "private": true,
   "scripts": {
