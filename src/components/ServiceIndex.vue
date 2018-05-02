@@ -61,6 +61,14 @@
                 </template>
                 <span v-if="entrypoint.description" class="description">{{entrypoint.description}}</span>
               </li>
+              <li v-for="publication in getPublications(tool)" :key="publication.name" class="publication">
+                  <div v-if="publication.author" class="authors">{{publication.authors}}</div>
+                  <icon name="book"></icon> <a v-if="publication.url" :href="publication.url">{{publication.name}}</a>
+                  <span v-if="!publication.url">{{publication.name}}</span>
+                  <div v-if="publication.isPartOf" class="journal">in: {{publication.isPartOf.name}} <template v-if="publication.isPartOf.issue">{{publication.isPartOf.issue}}</template></div>
+                  <span v-if="publication.datePublished" class="date">({{publication.datePublished}})</span>
+                  <span v-else-if="publication.isPartOf && publication.isPartOf.datePublished" class="date">({{publication.isPartOf.datePublished}})</span>
+              </li>
           </ul>
       </grid-item>
     </grid>
@@ -193,6 +201,7 @@ export default {
              }
           });
       },
+
       getLicense: function (tool) {
           return this.getPropertyValue(tool, 'license', function (license) {
              return license.name;
@@ -206,6 +215,12 @@ export default {
           return this.getPropertyValue(tool, 'audience', function (audience) {
              //schema:Audience
              return audience.audienceType;
+          })
+      },
+      getPublications: function (tool) {
+          return this.getPropertyValues(tool, 'referencePublication', function (publication) {
+             publication.authors = publication.author.join(", ");
+             return publication;
           })
       },
       getOrganizations: function (tool, property) {
@@ -331,5 +346,9 @@ ul.affiliations li {
     width: 100%;
     margin: 0 0;
     padding: 0 0;
+}
+li.publication .authors, li.publication .journal, li.publication .date {
+    font-style: italic;
+    font-size: 60%;
 }
 </style>
