@@ -156,6 +156,7 @@ export default {
   -webkit-transform: rotate(45deg);
   transform: rotate(45deg);
   opacity: 0.5;
+  overflow: hidden;
 }
 
 a {

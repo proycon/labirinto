@@ -2,11 +2,16 @@
   <div id="container">
   <div id="toolbar">
       <enhanced-check-group v-model="enabled_interfaces" :label="interface_labels" :value="interfaces" inline rounded combine></enhanced-check-group>
+      <div id="collapser">
+          <enhanced-check v-model="collapsed" label="Collapse?"></enhanced-check>
+      </div>
   </div>
+  <div v-html="env.DESCRIPTION" class="description"></div>
   <container width="100%">
-    <grid v-if="registry_loaded" horizontal="center" vertical="middle" wrap="wrap">
+    <grid v-if="registry_loaded" horizontal="center" vertical="top" wrap="wrap">
       <grid-item size="1/4" v-for="tool in showtools" :key="tool.identifier" class="tool">
-          <h2>{{tool.name}} <span class="version">{{tool.version}}</span></h2>
+          <h2 v-on:mouseover="uncollapse(tool)">{{tool.name}} <span class="version">{{tool.version}}</span></h2>
+          <div v-show="!collapsed || selectedtool == tool.identifier" class="toolbody">
           <ul v-if="tool.author" class="authors">
               <li v-for="(author, authorindex) in getAuthors(tool)" :key="author">{{author}}<span v-if="authorindex < getAuthors(tool).length - 1">,&nbsp;</span></li>
           </ul>
@@ -70,6 +75,7 @@
                   <span v-else-if="publication.isPartOf && publication.isPartOf.datePublished" class="date">({{publication.isPartOf.datePublished}})</span>
               </li>
           </ul>
+          </div>
       </grid-item>
     </grid>
   </container>
@@ -82,7 +88,7 @@ import Vue from 'vue'
 import Container from 'vue-fraction-grid/components/Container'
 import Grid from 'vue-fraction-grid/components/Grid'
 import GridItem from 'vue-fraction-grid/components/GridItem'
-import { EnhancedCheckGroup } from 'vue-enhanced-check'
+import { EnhancedCheck, EnhancedCheckGroup } from 'vue-enhanced-check'
 import 'vue-awesome/icons'
 import Icon from 'vue-awesome/components/Icon'
 
@@ -101,17 +107,21 @@ export default {
     Container: Vue.extend({ extends: Container, config }),
     Grid: Vue.extend({ extends: Grid, config }),
     GridItem: Vue.extend({ extends: GridItem, config }),
+    EnhancedCheck,
     EnhancedCheckGroup,
     Icon
   },
   data () {
     return {
+      env: process.env,
       interface_labels: [ "Web Applications", "Web Services", "Command line tools", "Programming Libraries", "Unspecified" ],
       interfaces: [ "WUI", "REST", "CLI", "LIB", "UNKNOWN" ],
       enabled_interfaces: [ "WUI", "REST" ],
       registry: {},
       registry_url: "http://mhysa.anaproy.nl:8080/metadata.json",
-      registry_loaded: false
+      registry_loaded: false,
+      collapsed: false,
+      selectedtool: ""
     }
   },
   created () {
@@ -130,6 +140,9 @@ export default {
       }
   },
   methods: {
+      uncollapse: function(tool) {
+         this.selectedtool = tool.identifier;
+      },
       matchTool: function (tool) {
           if (tool.interfaceType) {
               if (this.enabled_interfaces.includes(tool.interfaceType)) {
@@ -308,6 +321,9 @@ ul.entrypoints li {
 ul.entrypoints li.actionable {
     background: #85a989;
 }
+ul.entrypoints li.actionable a {
+    color: white;
+}
 ul.entrypoints li a {
     color: #30503a;
     font-weight: bold;
@@ -350,5 +366,28 @@ ul.affiliations li {
 li.publication .authors, li.publication .journal, li.publication .date {
     font-style: italic;
     font-size: 60%;
+}
+div#container>div.description {
+    padding: 3px;
+    background: #e0e0e0;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+    border-radius: 25px;
+    color: #384d3a;
+    font-weight: medium;
+}
+div.toolbody {
+    margin: 0;
+    padding: 0;
+}
+#collapser {
+    margin-top: -5px;
+    padding-right: 5px;
+    float: right;
+}
+div.tool:hover div.toolbody {
+    display: block;
+    visibility: visible;
 }
 </style>
