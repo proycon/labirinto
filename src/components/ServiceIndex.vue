@@ -1,6 +1,6 @@
 <template>
   <div id="container">
-  <div id="toolbar">
+  <div id="toolbar" :class="{ 'fixedtoolbar': isScrolled }">
       <enhanced-check-group v-model="enabled_interfaces" :label="interface_labels" :value="interfaces" inline rounded combine></enhanced-check-group>
       <div id="collapser">
           <enhanced-check v-model="collapsed" label="Collapse?"></enhanced-check>
@@ -121,6 +121,7 @@ export default {
       registry_url: "http://mhysa.anaproy.nl:8080/metadata.json",
       registry_loaded: false,
       collapsed: false,
+      isScrolled: false,
       selectedtool: ""
     }
   },
@@ -132,7 +133,8 @@ export default {
           });
           this.registry_loaded = true;
           this.$forceUpdate();
-      })
+      });
+      window.addEventListener('scroll', this.handleScroll);
   },
   computed: {
       showtools: function () {
@@ -140,6 +142,13 @@ export default {
       }
   },
   methods: {
+      handleScroll: function() {
+          var current = this.isScrolled;
+          this.isScrolled = (window.scrollY > 50);
+          if (current != this.isScrolled) {
+              this.$forceUpdate();
+          }
+      },
       uncollapse: function(tool) {
          this.selectedtool = tool.identifier;
       },
@@ -284,6 +293,10 @@ div#toolbar {
     margin: 0px;
     opacity: 0.8;
 }
+.fixedtoolbar {
+    position: fixed;
+    top: 0;
+}
 div.tool {
     background: #ffffff;
     border: 1px solid #85a989;
@@ -389,5 +402,8 @@ div.toolbody {
 div.tool:hover div.toolbody {
     display: block;
     visibility: visible;
+}
+.tool h2 {
+    cursor: pointer;
 }
 </style>
