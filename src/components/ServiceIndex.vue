@@ -5,6 +5,10 @@
       <div id="collapser">
           <enhanced-check v-model="collapsed" label="Collapse?"></enhanced-check>
       </div>
+      <div id="filters" v-if="env.ORGANIZATIONS || env.DOMAINS">
+          <enhanced-check v-if="env.ORGANIZATIONS" v-model="showthirdparty" label="Third party"></enhanced-check>
+          <enhanced-check v-if="env.DOMAINS" v-model="showremote" label="Remote services"></enhanced-check>
+      </div>
   </div>
   <div v-html="env.DESCRIPTION" class="description"></div>
   <container width="100%">
@@ -122,6 +126,8 @@ export default {
       registry_loaded: false,
       collapsed: false,
       isScrolled: false,
+      showthirdparty: true,
+      showremote: true,
       selectedtool: ""
     }
   },
@@ -172,6 +178,16 @@ export default {
           } else {
               return this.enabled_interfaces.includes("UNKNOWN");
           }
+          if (!this.showthirdparty) (
+              if (this.isThirdParty(tool)) {
+                  return false;
+              }
+          }
+          if (!this.showremote) (
+              if (this.isRemote(tool)) {
+                  return false;
+              }
+          }
           return false;
       },
       matchEntrypoint: function (entrypoint) {
@@ -181,6 +197,52 @@ export default {
               }
           }
           return false;
+      },
+      isThirdParty: function (tool) {
+            /* determines whether the tool is a 3rd party tool by matching
+               the producer, publisher or sourceOrganization properties, or
+               any of the authors affiliations
+            */
+           if (this.env.ORGANIZATIONS.length == 0) return false; //no first parties specified
+           var getOrganizationLabel = this.getOrganizationLabel; //function alias
+           var organizations = this.getPropertyValues(tool, 'author', function (author) {
+                 if (author.affiliation) {
+                     return getOrganizationLabel(author.affiliation);
+                 } else {
+                     return "";
+                 }
+           });
+           organizations += this.getPropertyValues(tool, 'producer', function (producer) {
+                 return getOrganizationLabel(producer);
+           });
+           organizations += this.getPropertyValues(tool, 'publisher', function (producer) {
+                 return getOrganizationLabel(producer);
+           });
+           organizations += this.getPropertyValues(tool, 'sourceOrganization', function (producer) {
+                 return getOrganizationLabel(producer);
+           });
+           //check if any of the gathered organizations matches the first party organizations
+           var firstparty = organizations.some(function(org) {
+               return this.env.ORGANIZATIONS.some(function(reforg) {
+                   return org.includes(reforg);
+               });
+           });
+           return !firstparty;
+      },
+      isRemote: function (tool) {
+          /* determines whether the tool is a remote or local tool
+             by checking whether the url contains any of the pre-configured own domains
+          */
+          if (this.env.DOMAINS.length == 0) return false; //no first parties specified
+          if (tool.entryPoints !== undefined) {
+              return tool.entryPoints.some(function(entrypoint) {
+                  return this.env.DOMAINS.some(function(domain) {
+                      return entrypoint.urlTemplate.includes(domain);
+                  });
+              });
+          } else {
+              return false;
+          }
       },
       getPropertyValues: function (obj, property, propcallback, valuecallback) {
           if (valuecallback === undefined) {
@@ -245,25 +307,26 @@ export default {
              return publication;
           })
       },
+      getOrganizationLabel: function (org) {
+          var labels = []
+          var locationparsed = false;
+          var first = true;
+          do {
+              if (!first) {
+                  org = org.parentOrganization;
+              } else {
+                  first = false;
+              }
+              labels.push(org.name);
+              if ((org.location) && (!locationparsed)) {
+                  labels.push(org.location.name);
+                  locationparsed = true;
+              }
+          } while (org.parentOrganization !== undefined);
+          return labels.join(", ")
+      },
       getOrganizations: function (tool, property) {
-          return this.getPropertyValues(tool, property, function (org) {
-              var labels = []
-              var locationparsed = false;
-              var first = true;
-              do {
-                  if (!first) {
-                      org = org.parentOrganization;
-                  } else {
-                      first = false;
-                  }
-                  labels.push(org.name);
-                  if ((org.location) && (!locationparsed)) {
-                      labels.push(org.location.name);
-                      locationparsed = true;
-                  }
-              } while (org.parentOrganization !== undefined);
-              return labels.join(", ")
-          })
+          return this.getPropertyValues(tool, property, this.getOrganizationLabel);
       },
       matchProgLangs: function (tool, lang) {
           return this.getPropertyValues(tool, 'programmingLanguage', function (proglang) {
@@ -398,6 +461,9 @@ div.toolbody {
     margin-top: -5px;
     padding-right: 5px;
     float: right;
+}
+#filters {
+    font-size: 80%;
 }
 div.tool:hover div.toolbody {
     display: block;
