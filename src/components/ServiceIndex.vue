@@ -6,8 +6,7 @@
           <enhanced-check v-model="collapsed" label="Collapse?"></enhanced-check>
       </div>
       <div id="filters" v-if="env.ORGANIZATIONS || env.DOMAINS">
-          <enhanced-check v-if="env.ORGANIZATIONS" v-model="showthirdparty" label="Third party"></enhanced-check>
-          <enhanced-check v-if="env.DOMAINS" v-model="showremote" label="Remote services"></enhanced-check>
+          <enhanced-check-group v-model="enabled_filters" :label="filter_labels" :value="filters" inline rounded combine></enhanced-check-group>
       </div>
   </div>
   <div v-html="env.DESCRIPTION" class="description"></div>
@@ -120,14 +119,15 @@ export default {
       env: process.env,
       interface_labels: [ "Web Applications", "Web Services", "Command line tools", "Programming Libraries", "Unspecified" ],
       interfaces: [ "WUI", "REST", "CLI", "LIB", "UNKNOWN" ],
+      filter_labels: [ "Third party", "Remote" ],
+      filters: [ "thirdparty", "remote" ],
+      enabled_filters: [ "thirdparty", "remote" ],
       enabled_interfaces: [ "WUI", "REST" ],
       registry: {},
       registry_url: "http://mhysa.anaproy.nl:8080/metadata.json",
       registry_loaded: false,
       collapsed: false,
       isScrolled: false,
-      showthirdparty: true,
-      showremote: true,
       selectedtool: ""
     }
   },
@@ -148,14 +148,14 @@ export default {
       }
   },
   methods: {
-      handleScroll: function() {
+      handleScroll: function () {
           var current = this.isScrolled;
           this.isScrolled = (window.scrollY > 50);
-          if (current != this.isScrolled) {
+          if (current !== this.isScrolled) {
               this.$forceUpdate();
           }
       },
-      uncollapse: function(tool) {
+      uncollapse: function (tool) {
          this.selectedtool = tool.identifier;
       },
       matchTool: function (tool) {
@@ -178,12 +178,12 @@ export default {
           } else {
               return this.enabled_interfaces.includes("UNKNOWN");
           }
-          if (!this.showthirdparty) (
+          if (!this.enabled_filters.includes("thirdparty")) {
               if (this.isThirdParty(tool)) {
                   return false;
               }
           }
-          if (!this.showremote) (
+          if (!this.enabled_filters.includes("remote")) {
               if (this.isRemote(tool)) {
                   return false;
               }
@@ -203,7 +203,7 @@ export default {
                the producer, publisher or sourceOrganization properties, or
                any of the authors affiliations
             */
-           if (this.env.ORGANIZATIONS.length == 0) return false; //no first parties specified
+           if (this.env.ORGANIZATIONS.length === 0) return false; //no first parties specified
            var getOrganizationLabel = this.getOrganizationLabel; //function alias
            var organizations = this.getPropertyValues(tool, 'author', function (author) {
                  if (author.affiliation) {
@@ -222,8 +222,8 @@ export default {
                  return getOrganizationLabel(producer);
            });
            //check if any of the gathered organizations matches the first party organizations
-           var firstparty = organizations.some(function(org) {
-               return this.env.ORGANIZATIONS.some(function(reforg) {
+           var firstparty = organizations.some(function (org) {
+               return this.env.ORGANIZATIONS.some(function (reforg) {
                    return org.includes(reforg);
                });
            });
@@ -233,10 +233,10 @@ export default {
           /* determines whether the tool is a remote or local tool
              by checking whether the url contains any of the pre-configured own domains
           */
-          if (this.env.DOMAINS.length == 0) return false; //no first parties specified
+          if (this.env.DOMAINS.length === 0) return false; //no first parties specified
           if (tool.entryPoints !== undefined) {
-              return tool.entryPoints.some(function(entrypoint) {
-                  return this.env.DOMAINS.some(function(domain) {
+              return tool.entryPoints.some(function (entrypoint) {
+                  return this.env.DOMAINS.some(function (domain) {
                       return entrypoint.urlTemplate.includes(domain);
                   });
               });
@@ -464,6 +464,7 @@ div.toolbody {
 }
 #filters {
     font-size: 80%;
+    margin-top: 5px;
 }
 div.tool:hover div.toolbody {
     display: block;
