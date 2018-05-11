@@ -1,11 +1,13 @@
 <template>
   <div id="app">
     <div id="header">
+        <img v-if="env.LOGO_LEFT" id="logoleft" src="./assets/logo_left.png"/>
         <h1>{{env.TITLE}}</h1>
+        <img v-if="env.LOGO_RIGHT" id="logoright" src="./assets/logo_right.png"/>
     </div>
     <router-view/>
     <div id="footer">
-        <strong>{{env.TITLE}}</strong> - powered by <a href="https://github.com/proycon/labirinto">Labirinto</a> v{{env.VERSION}}
+        <strong>{{env.TITLE}}</strong> - powered by <a href="https://github.com/proycon/labirinto">Labirinto</a> v{{env.VERSION}} - <a :href="env.REGISTRY_URL">View raw metadata registry</a>
     </div>
   </div>
 </template>
@@ -129,6 +131,17 @@ export default {
         url('./assets/Raleway_700.svg#Raleway') format('svg'),
         /* from https://fonts.gstatic.com/s/raleway/v12/1Ptrg8zYS_SKggPNwJYtWqZPBQ.ttf */
         url('./assets/Raleway_700.ttf') format('truetype');
+}
+#logoleft {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+#logoright {
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    height: 50px;
 }
 #app {
   font-family: "Raleway" , sans-serif;

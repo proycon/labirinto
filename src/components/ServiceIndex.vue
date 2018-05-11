@@ -119,12 +119,11 @@ export default {
       env: process.env,
       interface_labels: [ "Web Applications", "Web Services", "Command line tools", "Programming Libraries", "Unspecified" ],
       interfaces: [ "WUI", "REST", "CLI", "LIB", "UNKNOWN" ],
-      filter_labels: [ "Third party", "Remote" ],
+      filter_labels: [ "Third party tools", "Remote Services" ],
       filters: [ "thirdparty", "remote" ],
       enabled_filters: [ "thirdparty", "remote" ],
       enabled_interfaces: [ "WUI", "REST" ],
       registry: {},
-      registry_url: "http://mhysa.anaproy.nl:8080/metadata.json",
       registry_loaded: false,
       collapsed: false,
       isScrolled: false,
@@ -132,7 +131,7 @@ export default {
     }
   },
   created () {
-      axios.get(this.registry_url).then(response => {
+      axios.get(this.env.REGISTRY_URL).then(response => {
           //add software
           response.data['@graph'].forEach(tool => {
               this.registry[tool.identifier] = tool
