@@ -443,14 +443,16 @@ li.publication .authors, li.publication .journal, li.publication .date {
     font-size: 60%;
 }
 div#container>div.description {
-    padding: 3px;
-    background: #e0e0e0;
+    padding: 10px;
+    background: #fff;
     margin-left: auto;
     margin-right: auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
     width: 50%;
     border-radius: 25px;
     color: #384d3a;
-    font-weight: medium;
+    box-shadow: 3px 3px #000000a0;
 }
 div.toolbody {
     margin: 0;
