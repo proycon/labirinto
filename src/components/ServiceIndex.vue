@@ -52,6 +52,7 @@
                   <li v-if="matchProgLangs(tool,'go')" class="proglang"><icon name="brands/google"></icon>&nbsp; <span>Go</span></li>
                   <li v-if="matchProgLangs(tool,'lua')" class="proglang"><icon name="moon"></icon>&nbsp; <span>Lua</span></li>
               </template>
+              <li class="link"><icon name="database" @click="showMetadata(tool)"></icon>&nbsp;<span @click="showMetadata(tool)">Metadata</span></li>
           </ul>
           <ul v-if="tool.keywords" class="keywords">
               <li v-for="keyword in tool.keywords" :key="keyword">{{keyword}}</li>
@@ -346,6 +347,9 @@ export default {
               return pattern.toLowerCase().includes(' ' + lang + ' ');
           });
       },
+      showMetadata: function (tool) {
+          console.log(tool);
+      },
       resolve: function (data) {
           //resolves IDs
           for (var key in data) {
@@ -423,6 +427,10 @@ div.tool span.version {
 }
 div.tool .license span, div.tool .proglang span, div.tool .audience span {
     font-size: 65%;
+}
+div.tool .link span {
+    font-size: 65%;
+    cursor: pointer;
 }
 div.tool ul.keywords li {
     font-size: 65%;
