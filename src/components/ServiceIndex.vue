@@ -12,9 +12,9 @@
   <div v-html="env.DESCRIPTION" class="description"></div>
   <container width="100%">
     <grid v-if="registry_loaded" horizontal="center" vertical="top" wrap="wrap">
-      <grid-item size="1/4" v-for="tool in showtools" :key="tool.identifier" class="tool">
+      <grid-item size="1/4" v-for="tool in showtools" :key="tool.identifier" @mouseleave="selectedtool = null" class="tool">
           <h2 v-on:mouseover="uncollapse(tool)">{{tool.name}} <span class="version">{{tool.version}}</span></h2>
-          <div v-show="!collapsed || selectedtool == tool.identifier" class="toolbody">
+          <div v-show="!collapsed || selectedtool === tool.identifier" class="toolbody">
           <ul v-if="tool.author" class="authors">
               <li v-for="(author, authorindex) in getAuthors(tool)" :key="author">{{author}}<span v-if="authorindex < getAuthors(tool).length - 1">,&nbsp;</span></li>
           </ul>
