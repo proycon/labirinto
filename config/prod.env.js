@@ -8,5 +8,5 @@ module.exports = {
   LOGO_RIGHT: 'true',
   LOGO_LEFT: 'true',
   ORGANIZATIONS: '[]',
-  DOMAINS: '[]',
+  DOMAINS: '[]'
 }
