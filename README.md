@@ -17,8 +17,9 @@ can be used to build such a registry from individual ``codemeta.json`` files.
 
 Note that Labirinto does not and will never offer an editable database or metadata editor for the software metadata;
 this is a front-end that does not even require a database backend or any server-side component for that matter. Our
-philosophy is that software metadata should be in a simple format and live right alongside the source code in a version
-control repository (e.g. on github, bitbucket, etc).
+philosophy is that software metadata should be in a simple format and either live right alongside the source code in a
+version controlled repository (e.g. on github, bitbucket, etc), or be obtained from a software repository such as as the
+Python Package Index, CRAN, CPAN, Maven Central and automatically converted to a unified format.
 
 Labirinto is used by and included in the [LaMachine](https://github.com/proycon/LaMachine) software distribution,
 providing an overview and access to all software installed in LaMachine. The metadata for tools participating in
