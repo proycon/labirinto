@@ -124,6 +124,7 @@ export default {
       enabled_filters: [ "thirdparty", "remote" ],
       enabled_interfaces: [ "WUI", "REST" ],
       registry: {},
+      idmap: {},
       registry_loaded: false,
       collapsed: false,
       isScrolled: false,
@@ -135,6 +136,7 @@ export default {
           //add software
           response.data['@graph'].forEach(tool => {
               console.log("Registered tool " + tool.identifier);
+              this.resolve(tool);
               this.registry[tool.identifier] = tool
           });
           this.registry_loaded = true;
@@ -227,7 +229,7 @@ export default {
            var reforgs = this.env.ORGANIZATIONS;
            var firstparty = organizations.some(function (org) {
                return reforgs.some(function (reforg) {
-                   return (org !== "") && (reforg !== "") && org.includes(reforg);
+                   return (org !== "") && (reforg !== "") && org.toLowerCase().includes(reforg.toLowerCase());
                });
            });
            return !firstparty;
@@ -321,7 +323,11 @@ export default {
               } else {
                   first = false;
               }
-              labels.push(org.name);
+              if (org.name !== undefined) {
+                  labels.push(org.name);
+              } else if (org['@id'] !== undefined) { //fallback to ID if it there is no name
+                  labels.push(org['@id']);
+              }
               if ((org.location) && (!locationparsed)) {
                   labels.push(org.location.name);
                   locationparsed = true;
@@ -339,6 +345,37 @@ export default {
               var pattern = " " + proglang.toLowerCase() + " ";
               return pattern.toLowerCase().includes(' ' + lang + ' ');
           });
+      },
+      resolve: function (data) {
+          //resolves IDs
+          for (var key in data) {
+              if (data.hasOwnProperty(key)) {
+                  if (data[key].constructor === Object) {
+                      if (data[key]['@id'] !== undefined) {
+                          var nrofkeys = Object.keys(data[key]).length;
+                          if (nrofkeys > 1) {
+                            //this is not a reference, register in idmap (possibly overwriting earlier definition!)
+                            this.idmap[data[key]['@id']] = data[key];
+                          } else if (nrofkeys === 1) {
+                            //this is a a reference
+                            if (this.idmap[data[key]['@id']] !== undefined) {
+                                data[key] = this.idmap[data[key]['@id']];
+                            } else {
+                                console.log("Unable to resolve @id " + data[key]['@id']);
+                            }
+                         }
+                      }
+                      this.resolve(data[key])
+                  } else if (data[key].constructor === Array) {
+                      var newvalue = [];
+                      for (var i = 0; i < data[key].length; i++) {
+                            newvalue.push(this.resolve(data[key][i]));
+                      }
+                      data[key] = newvalue;
+                  }
+              }
+          }
+          return data;
       }
   }
 }
