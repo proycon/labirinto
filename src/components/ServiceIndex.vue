@@ -117,7 +117,7 @@ export default {
   data () {
     return {
       env: process.env,
-      interface_labels: [ "Web Applications", "Web Services", "Command line tools", "Programming Libraries", "Unspecified" ],
+      interface_labels: [ "Web Applications", "Web Services", "Command line tools", "Programming Libraries", "Any" ],
       interfaces: [ "WUI", "REST", "CLI", "LIB", "UNKNOWN" ],
       filter_labels: [ "Third party tools", "Remote Services" ],
       filters: [ "thirdparty", "remote" ],
@@ -134,6 +134,7 @@ export default {
       axios.get(this.env.REGISTRY_URL).then(response => {
           //add software
           response.data['@graph'].forEach(tool => {
+              console.log("Registered tool " + tool.identifier);
               this.registry[tool.identifier] = tool
           });
           this.registry_loaded = true;
@@ -158,9 +159,22 @@ export default {
          this.selectedtool = tool.identifier;
       },
       matchTool: function (tool) {
+          console.log("Processing tool " + tool.identifier);
           if (tool.interfaceType) {
               if (this.enabled_interfaces.includes(tool.interfaceType)) {
                   return true;
+              }
+          }
+          if (!this.enabled_filters.includes("thirdparty")) {
+              if (this.isThirdParty(tool)) {
+                  console.log("Tool " + tool.identifier + " is third party, not showing");
+                  return false;
+              }
+          }
+          if (!this.enabled_filters.includes("remote")) {
+              if (this.isRemote(tool)) {
+                  console.log("Tool " + tool.identifier + " is remote, not showing");
+                  return false;
               }
           }
           if (tool.entryPoints !== undefined) {
@@ -170,24 +184,14 @@ export default {
                       found = true;
                   }
               });
-              if (found) return true;
-              if (tool.entryPoints.length === 0) {
-                  return this.enabled_interfaces.includes("UNKNOWN");
-              }
-          } else {
-              return this.enabled_interfaces.includes("UNKNOWN");
-          }
-          if (!this.enabled_filters.includes("thirdparty")) {
-              if (this.isThirdParty(tool)) {
-                  return false;
+              if (found) {
+                  console.log("Showing tool " + tool.identifier + ", matching entrypoints");
+                  return true;
+              } else {
+                  console.log("Tool " + tool.identifier + " has no matching entrypoints, not showing");
               }
           }
-          if (!this.enabled_filters.includes("remote")) {
-              if (this.isRemote(tool)) {
-                  return false;
-              }
-          }
-          return false;
+          return this.enabled_interfaces.includes("UNKNOWN");
       },
       matchEntrypoint: function (entrypoint) {
           if (entrypoint.interfaceType) {
@@ -407,8 +411,8 @@ ul.entrypoints li a {
 ul.entrypoints li.actionable:hover {
     background: #cbcba8;
 }
-ul.entrypoints li.actionable:hover a {
-    color: black;
+ul.entrypoints li:hover a {
+    color: #812c7f;
 }
 ul.entrypoints span.url {
     display: block;
