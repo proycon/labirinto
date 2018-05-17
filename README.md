@@ -21,9 +21,9 @@ philosophy is that software metadata should be in a simple format and either liv
 version controlled repository (e.g. on github, bitbucket, etc), or be obtained from a software repository such as as the
 Python Package Index, CRAN, CPAN, Maven Central and automatically converted to a unified format.
 
-Labirinto is used by and included in the [LaMachine](https://github.com/proycon/LaMachine) software distribution,
+Labirinto is used by and included in the [LaMachine](https://proycon.github.io/LaMachine) software distribution,
 providing an overview and access to all software installed in LaMachine. The metadata for tools participating in
-LaMachine is, when not explicitly provided in yet, *automatically* converted to the CodeMeta standard (by
+LaMachine is, when not explicitly provided yet, *automatically* converted to the CodeMeta standard (by
 [CodeMetaPy](https://github.com/proycon/codemetapy) or [CodeMetar](https://ropensci.github.io/codemetar/)), and
 subsequently combined into a single registry for use with Labirinto.
 
