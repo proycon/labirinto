@@ -141,10 +141,13 @@ export default {
           this.$forceUpdate();
       });
       window.addEventListener('scroll', this.handleScroll);
+      //console.log("My organizations:", this.env.ORGANIZATIONS);
+      //console.log("My domains:", this.env.DOMAINS);
   },
   computed: {
       showtools: function () {
-          return Object.keys(this.registry).sort().map(identifier => this.registry[identifier]).filter(this.matchTool, this.enabled_interfaces);
+          return Object.keys(this.registry).sort().map(identifier => this.registry[identifier]).filter(this.matchTool, this.enabled_interfaces, this.enabled_filters);
+          //the latter two arguments are passed only so vue knows there is a dependency relation and triggers an update when needed
       }
   },
   methods: {
@@ -159,22 +162,21 @@ export default {
          this.selectedtool = tool.identifier;
       },
       matchTool: function (tool) {
-          console.log("Processing tool " + tool.identifier);
-          if (tool.interfaceType) {
-              if (this.enabled_interfaces.includes(tool.interfaceType)) {
-                  return true;
-              }
-          }
           if (!this.enabled_filters.includes("thirdparty")) {
               if (this.isThirdParty(tool)) {
-                  console.log("Tool " + tool.identifier + " is third party, not showing");
+                  //console.log("Tool " + tool.identifier + " is third party, not showing");
                   return false;
               }
           }
           if (!this.enabled_filters.includes("remote")) {
               if (this.isRemote(tool)) {
-                  console.log("Tool " + tool.identifier + " is remote, not showing");
+                  //console.log("Tool " + tool.identifier + " is remote, not showing");
                   return false;
+              }
+          }
+          if (tool.interfaceType) {
+              if (this.enabled_interfaces.includes(tool.interfaceType)) {
+                  return true;
               }
           }
           if (tool.entryPoints !== undefined) {
@@ -185,10 +187,7 @@ export default {
                   }
               });
               if (found) {
-                  console.log("Showing tool " + tool.identifier + ", matching entrypoints");
                   return true;
-              } else {
-                  console.log("Tool " + tool.identifier + " has no matching entrypoints, not showing");
               }
           }
           return this.enabled_interfaces.includes("UNKNOWN");
@@ -215,19 +214,20 @@ export default {
                      return "";
                  }
            });
-           organizations += this.getPropertyValues(tool, 'producer', function (producer) {
+           organizations = organizations.concat(this.getPropertyValues(tool, 'producer', function (producer) {
                  return getOrganizationLabel(producer);
-           });
-           organizations += this.getPropertyValues(tool, 'publisher', function (producer) {
+           }));
+           organizations = organizations.concat(this.getPropertyValues(tool, 'publisher', function (producer) {
                  return getOrganizationLabel(producer);
-           });
-           organizations += this.getPropertyValues(tool, 'sourceOrganization', function (producer) {
+           }));
+           organizations = organizations.concat(this.getPropertyValues(tool, 'sourceOrganization', function (producer) {
                  return getOrganizationLabel(producer);
-           });
+           }));
            //check if any of the gathered organizations matches the first party organizations
+           var reforgs = this.env.ORGANIZATIONS;
            var firstparty = organizations.some(function (org) {
-               return this.env.ORGANIZATIONS.some(function (reforg) {
-                   return org.includes(reforg);
+               return reforgs.some(function (reforg) {
+                   return (org !== "") && (reforg !== "") && org.includes(reforg);
                });
            });
            return !firstparty;
@@ -237,10 +237,11 @@ export default {
              by checking whether the url contains any of the pre-configured own domains
           */
           if (this.env.DOMAINS.length === 0) return false; //no first parties specified
+          var domains = this.env.DOMAINS;
           if (tool.entryPoints !== undefined) {
               return tool.entryPoints.some(function (entrypoint) {
-                  return this.env.DOMAINS.some(function (domain) {
-                      return entrypoint.urlTemplate.includes(domain);
+                  return domains.some(function (domain) {
+                      return (domain !== "") && (entrypoint.urlTemplate.includes(domain));
                   });
               });
           } else {

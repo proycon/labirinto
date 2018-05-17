@@ -7,6 +7,6 @@ module.exports = {
   REGISTRY_URL: '"http://localhost:8080/metadata.json"',
   LOGO_RIGHT: 'true',
   LOGO_LEFT: 'true',
-  ORGANIZATIONS: '[]',
+  ORGANIZATIONS: '["Radboud"]',
   DOMAINS: '[]'
 }
