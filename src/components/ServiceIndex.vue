@@ -1,4 +1,4 @@
-<template>
+ && window.innerWidth > 600<template>
   <div id="container">
   <div id="toolbar" :class="{ 'fixedtoolbar': isScrolled }">
       <enhanced-check-group v-model="enabled_interfaces" :label="interface_labels" :value="interfaces" inline rounded combine></enhanced-check-group>
@@ -162,7 +162,9 @@ export default {
           this.registry_loaded = true;
           this.$forceUpdate();
       });
-      window.addEventListener('scroll', this.handleScroll);
+      if (window.innerHeight > 500) {
+          window.addEventListener('scroll', this.handleScroll);
+      }
       //console.log("My organizations:", this.env.ORGANIZATIONS);
       //console.log("My domains:", this.env.DOMAINS);
   },
@@ -170,6 +172,9 @@ export default {
       showtools: function () {
           return Object.keys(this.registry).sort().map(identifier => this.registry[identifier]).filter(this.matchTool, this.enabled_interfaces, this.enabled_filters);
           //the latter two arguments are passed only so vue knows there is a dependency relation and triggers an update when needed
+      },
+      smallscreen: function() {
+          return window.innerWidth < 800 || window.innerHeight < 600;
       }
   },
   methods: {
@@ -450,6 +455,7 @@ div.tool {
     margin-bottom: 20px;
     padding: 10px;
     font-size: 80%;
+    min-width: 320px;
 }
 div.tool:hover {
     background: #e9f3eb;

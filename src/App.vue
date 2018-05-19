@@ -1,9 +1,9 @@
 <template>
   <div id="app">
     <div id="header">
-        <img v-if="env.LOGO_LEFT" id="logoleft" src="./assets/logo_left.png"/>
+        <img v-if="env.LOGO_LEFT && !smallscreen" id="logoleft" src="./assets/logo_left.png"/>
         <h1>{{env.TITLE}}</h1>
-        <img v-if="env.LOGO_RIGHT" id="logoright" src="./assets/logo_right.png"/>
+        <img v-if="env.LOGO_RIGHT && !smallscreen" id="logoright" src="./assets/logo_right.png"/>
     </div>
     <router-view/>
     <div id="footer">
@@ -18,6 +18,11 @@ export default {
   data () {
       return {
           "env": process.env
+      }
+  },
+  computed: {
+      smallscreen: function() {
+          return window.innerWidth < 800 || window.innerHeight < 600;
       }
   }
 }
