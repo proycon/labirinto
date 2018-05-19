@@ -26,7 +26,7 @@
                   <li v-for="organization in getOrganizations(tool, 'publisher')" :key="organization">{{organization}}</li>
               </template>
               <template v-if="tool.funder">
-                  <li v-for="organization in getOrganizations(tool, 'funder')" :key="organization">{{organization}}</li>
+                  <li v-for="organization in getOrganizations(tool, 'funder')" class="funder" :key="organization">{{organization}}</li>
               </template>
           </ul>
           <div class="description">{{tool.description}}</div>
@@ -475,6 +475,10 @@ ul.affiliations li {
     display: block;
     color: #85a989;
     font-size: 80%;
+}
+ul.affiliations li.funder {
+    color: #4c696b;
+    font-style: italic;
 }
 #toolbar  {
     width: 100%;
