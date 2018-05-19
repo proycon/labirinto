@@ -7,7 +7,7 @@
     </div>
     <router-view/>
     <div id="footer">
-        <strong>{{env.TITLE}}</strong> - powered by <a href="https://github.com/proycon/labirinto">Labirinto</a> v0.1.0 - <a :href="env.REGISTRY_URL">View raw metadata registry</a>
+        <strong>{{env.TITLE}}</strong> - powered by <a href="https://github.com/proycon/labirinto">Labirinto</a> v0.1.1 - <a :href="env.REGISTRY_URL">View raw metadata registry</a>
     </div>
   </div>
 </template>
