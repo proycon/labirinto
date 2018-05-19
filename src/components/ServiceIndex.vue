@@ -72,7 +72,7 @@
                 <icon v-if="entrypoint.interfaceType == 'WUI'" name="sign-in-alt"></icon>
                 <icon v-else-if="entrypoint.interfaceType == 'REST'" name="cog"></icon>
                 <icon v-else-if="entrypoint.interfaceType == 'CLI'" name="terminal"></icon>
-                <tt v-if="entrypoint.name">{{entrypoint.name}}</tt>
+                <tt v-if="entrypoint.name">{{entrypoint.name}}<br/></tt>
                 <a v-if="entrypoint.interfaceType == 'WUI'" :href="entrypoint.urlTemplate">Open {{tool.name}} in browser<span class="url">{{entrypoint.urlTemplate}}</span></a>
                 <a v-if="entrypoint.interfaceType == 'REST'" :href="entrypoint.urlTemplate">Webservice <span class="url">{{entrypoint.urlTemplate}}</span></a>
                 <template v-if="entrypoint.interfaceType == 'REST' && entrypoint.specification">
@@ -173,7 +173,7 @@ export default {
           return Object.keys(this.registry).sort().map(identifier => this.registry[identifier]).filter(this.matchTool, this.enabled_interfaces, this.enabled_filters);
           //the latter two arguments are passed only so vue knows there is a dependency relation and triggers an update when needed
       },
-      smallscreen: function() {
+      smallscreen: function () {
           return window.innerWidth < 800 || window.innerHeight < 600;
       }
   },

@@ -21,7 +21,7 @@ export default {
       }
   },
   computed: {
-      smallscreen: function() {
+      smallscreen: function () {
           return window.innerWidth < 800 || window.innerHeight < 600;
       }
   }
