@@ -1,8 +1,9 @@
 # Labirinto
 
 Labirinto is a *virtual laboratory portal*, it makes a collection of software browseable and searchable for the
-end-user. Labirinto presents the software's metadata in an intuitive way and allows the user to filter and perform a limited search.
-The portal gives access to software if it offers web-based interfaces.
+end-user. Labirinto presents the software's metadata following the [CodeMeta](https://codemeta.github.io) specification
+in an intuitive way and allows the user to filter and perform a limited search.  The portal gives access to software if
+it offers web-based interfaces.
 
 This system is specifically geared towards research software, and for instance allows linking to relevant scientific publications for each tool.
 
