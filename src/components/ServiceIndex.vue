@@ -9,6 +9,13 @@
           <enhanced-check-group v-model="enabled_filters" :label="filter_labels" :value="filters" inline rounded combine></enhanced-check-group>
       </div>
   </div>
+  <div id="details" v-if="showdetails">
+      <button @click="showdetails=false">close window</button><br />
+      <div class="scrollable">
+          <vue-json-pretty v-if="details_type === 'json'" :data="details_json" deep="2"></vue-json-pretty>
+          <vue-markdown v-if="details_type === 'markdown'" :source="details_markdown"></vue-markdown>
+      </div>
+  </div>
   <div v-html="env.DESCRIPTION" class="description"></div>
   <container width="100%">
     <grid v-if="registry_loaded" horizontal="center" vertical="top" wrap="wrap">
@@ -29,12 +36,15 @@
                   <li v-for="organization in getOrganizations(tool, 'funder')" class="funder" :key="organization">{{organization}}</li>
               </template>
           </ul>
-          <div class="description">{{tool.description}}</div>
+          <div class="description">
+              {{tool.description}}
+              <button @click="showReadMe(tool)" v-if="tool.readme !== undefined && enable_readmore">read more...</button>
+          </div>
           <ul class="properties">
               <li v-if="tool.url" hint="Project website"><icon name="home"></icon>&nbsp;<a :href="tool.url">Website</a></li>
               <li v-if="tool.codeRepository" hint="Source code repository"><icon name="code"></icon>&nbsp;<a :href="tool.codeRepository">Source code</a></li>
               <li v-if="tool.issueTracker" hint="Issue Tracker"><icon name="bug"></icon>&nbsp;<a :href="tool.issueTracker">Issue Tracker</a></li>
-              <li v-if="tool.license" class="license" hint="License"><icon name="copyright" flip="horizontal" :label="tool.license"></icon>&nbsp;<span>{{getLicense(tool)}}</span></li>
+              <li v-if="tool.license" class="license" hint="License"><icon name="copyright" :label="tool.license"></icon>&nbsp;<span>{{getLicense(tool)}}</span></li>
               <li v-if="tool.audience" class="audience" hint="Intended Audience"><icon name="users" :label="tool.audience"></icon>&nbsp;<span>{{getAudience(tool)}}</span></li>
               <template v-if="tool.programmingLanguage">
                   <li v-if="matchProgLangs(tool,'python')" class="proglang"><icon name="brands/python"></icon>&nbsp; <span>Python</span></li>
@@ -95,6 +105,8 @@ import GridItem from 'vue-fraction-grid/components/GridItem'
 import { EnhancedCheck, EnhancedCheckGroup } from 'vue-enhanced-check'
 import 'vue-awesome/icons'
 import Icon from 'vue-awesome/components/Icon'
+import VueMarkdown from 'vue-markdown'
+import VueJsonPretty from 'vue-json-pretty'
 
 const config = {
   container: '90%',
@@ -113,7 +125,9 @@ export default {
     GridItem: Vue.extend({ extends: GridItem, config }),
     EnhancedCheck,
     EnhancedCheckGroup,
-    Icon
+    Icon,
+    'vue-markdown': VueMarkdown,
+    VueJsonPretty
   },
   data () {
     return {
@@ -129,7 +143,12 @@ export default {
       registry_loaded: false,
       collapsed: false,
       isScrolled: false,
-      selectedtool: ""
+      showdetails: false,
+      selectedtool: "",
+      details_markdown: "",
+      details_json: {},
+      details_type: "json",
+      enable_readmore: false
     }
   },
   created () {
@@ -348,7 +367,25 @@ export default {
           });
       },
       showMetadata: function (tool) {
+          this.details_json = tool;
+          this.details_type = "json";
+          this.showdetails = true;
           console.log(tool);
+      },
+      showReadMe: function (tool) {
+          var url;
+          if ((tool.readme.includes('github.com')) && (!tool.readme.includes('raw')) && (tool.readme.includes('blob'))) {
+              //url is not raw yet
+              url = tool.readme.replace('blob/', 'raw/');
+          } else {
+              url = tool.readme;
+          }
+          axios.get(url).then(response => {
+              //add software
+              this.details_type = "markdown";
+              this.details_markdown = response;
+              this.showdetails = true;
+          });
       },
       resolve: function (data) {
           //resolves IDs
@@ -528,5 +565,34 @@ div.tool:hover div.toolbody {
 }
 .tool h2 {
     cursor: pointer;
+}
+#details {
+    border: 1px solid #85a989;
+    border-radius: 20px;
+    margin: 10px;
+    margin-bottom: 20px;
+    padding: 10px;
+    font-size: 80%;
+    background: white;
+    position: fixed;
+    left: 20%;
+    top: 20px;
+    width: 60%;
+    height: 90%;
+    text-align: left;
+}
+button {
+    background: #ddd;
+    border: 1px solid #85a989;
+    font-weight: bold;
+    cursor: pointer;
+}
+#details button {
+    float: right;
+}
+#details .scrollable {
+    overflow: scroll;
+    width: 100%;
+    height: 95%;
 }
 </style>

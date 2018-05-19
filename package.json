@@ -20,6 +20,8 @@
     "vue-awesome": "^3.0.0",
     "vue-enhanced-check": "^1.5.1",
     "vue-fraction-grid": "^1.1.0",
+    "vue-json-pretty": "^1.3.4",
+    "vue-markdown": "^2.2.4",
     "vue-router": "^3.0.1"
   },
   "devDependencies": {
