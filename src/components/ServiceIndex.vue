@@ -13,7 +13,7 @@
   <container width="100%">
     <grid v-if="registry_loaded" horizontal="center" vertical="top" wrap="wrap">
       <grid-item size="1/4" v-for="tool in showtools" :key="tool.identifier" @mouseleave="selectedtool = null" class="tool">
-          <h2 v-on:mouseover="uncollapse(tool)">{{tool.name}} <span class="version">{{tool.version}}</span></h2>
+          <h2 v-on:mouseover="uncollapse(tool)">{{tool.name}} <span class="version" v-if="tool.version !== undefined && tool.version !== 'unknown' && tool.version !== 'unspecified'">{{tool.version}}</span></h2>
           <div v-show="!collapsed || selectedtool === tool.identifier" class="toolbody">
           <ul v-if="tool.author" class="authors">
               <li v-for="(author, authorindex) in getAuthors(tool)" :key="author">{{author}}<span v-if="authorindex < getAuthors(tool).length - 1">,&nbsp;</span></li>
@@ -486,7 +486,8 @@ ul.affiliations li {
 #container {
     width: 100%;
     margin: 0 0;
-    padding: 0 0;
+    padding: 0;
+    padding-bottom: 20px;
 }
 li.publication .authors, li.publication .journal, li.publication .date {
     font-style: italic;

@@ -152,31 +152,11 @@ export default {
   margin: 0 0;
   padding: 0 0;
 }
-#wallpaper {
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-}
-#wallpaper:before {
-  content: "";
-  position: absolute;
-  width: 400%;
-  height: 400%;
-  top: -200%;
-  left: -200%;
-  z-index: -1;
-  background: url(./assets/maze.png) 0 0 repeat;
-  -webkit-transform: rotate(45deg);
-  transform: rotate(45deg);
-  opacity: 0.5;
-  overflow: hidden;
-}
-
 a {
   color: #384d3a;
 }
 body {
-  background: #ededed; /*url(./assets/back.png);*/
+  background: url(./assets/maze.png) 0 0 repeat;
   margin: 0 0;
   padding: 0 0;
 }
