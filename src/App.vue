@@ -20,6 +20,9 @@ export default {
           "env": process.env
       }
   },
+  created () {
+      document.title = process.env.TITLE;
+  },
   computed: {
       smallscreen: function () {
           return window.innerWidth < 800 || window.innerHeight < 600;
