@@ -1,4 +1,4 @@
- && window.innerWidth > 600<template>
+<template>
   <div id="container">
   <div id="toolbar" :class="{ 'fixedtoolbar': isScrolled }">
       <enhanced-check-group v-model="enabled_interfaces" :label="interface_labels" :value="interfaces" inline rounded combine></enhanced-check-group>
@@ -17,6 +17,7 @@
       </div>
   </div>
   <div v-html="env.DESCRIPTION" class="description"></div>
+  <div v-if="error">{{error}}</div>
   <container width="100%">
     <grid v-if="registry_loaded" horizontal="center" vertical="top" wrap="wrap">
       <grid-item size="1/4" v-for="tool in showtools" :key="tool.identifier" @mouseleave="selectedtool = null" class="tool">
@@ -148,6 +149,7 @@ export default {
       details_markdown: "",
       details_json: {},
       details_type: "json",
+      error: "",
       enable_readmore: false
     }
   },
@@ -161,6 +163,9 @@ export default {
           });
           this.registry_loaded = true;
           this.$forceUpdate();
+      }).catch(error => {
+          this.error = error;
+          console.log(error);
       });
       if (window.innerHeight > 500) {
           window.addEventListener('scroll', this.handleScroll);
