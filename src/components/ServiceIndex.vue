@@ -610,8 +610,11 @@ button {
     background: #431d1d;
     color: white;
     font-weight: bold;
-    padding: 20px:
+    padding: 20px;
     border: red solid 1px;
     border-radius: 25px;
+    width: 75%;
+    margin-left: auto;
+    margin-right: auto;
 }
 </style>

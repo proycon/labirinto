@@ -5,14 +5,18 @@
   "author": "Maarten van Gompel <proycon@anaproy.nl>",
   "homepage": "https://github.com/proycon/labirinto",
   "repository": {
-      "type": "git",
-      "url": "https://github.com/proycon/labirinto"
+    "type": "git",
+    "url": "https://github.com/proycon/labirinto"
   },
   "bugs": {
-      "url": "https://github.com/proycon/labirinto/issues"
+    "url": "https://github.com/proycon/labirinto/issues"
   },
   "license": "AGPL-3.0-or-later",
-  "keywords": ["portal","codemeta","metadata"],
+  "keywords": [
+    "portal",
+    "codemeta",
+    "metadata"
+  ],
   "private": false,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
