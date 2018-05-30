@@ -17,7 +17,7 @@
       </div>
   </div>
   <div v-html="env.DESCRIPTION" class="description"></div>
-  <div v-if="error">{{error}}</div>
+  <div v-if="error" class="error">{{error}}</div>
   <container width="100%">
     <grid v-if="registry_loaded" horizontal="center" vertical="top" wrap="wrap">
       <grid-item size="1/4" v-for="tool in showtools" :key="tool.identifier" @mouseleave="selectedtool = null" class="tool">
@@ -164,7 +164,7 @@ export default {
           this.registry_loaded = true;
           this.$forceUpdate();
       }).catch(error => {
-          this.error = error;
+          this.error = "Unable to obtain metadata registry from " + this.env.REGISTRY_URL + " :" + error;
           console.log(error);
       });
       if (window.innerHeight > 500) {
@@ -605,5 +605,13 @@ button {
     overflow: scroll;
     width: 100%;
     height: 95%;
+}
+.error {
+    background: #431d1d;
+    color: white;
+    font-weight: bold;
+    padding: 20px:
+    border: red solid 1px;
+    border-radius: 25px;
 }
 </style>
