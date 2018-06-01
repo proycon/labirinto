@@ -155,7 +155,7 @@ export default {
   },
   created () {
       var config = {};
-      if (this.env.REGISTRY_URL[0] == '/') {
+      if (this.env.REGISTRY_URL[0] === '/') {
           //registry URL is relative, set baseURL to current server
           config.baseURL = window.location.origin;
       }
@@ -169,7 +169,11 @@ export default {
           this.registry_loaded = true;
           this.$forceUpdate();
       }).catch(error => {
-          this.error = "Unable to obtain metadata registry from " + this.env.REGISTRY_URL + " :" + error;
+          if (this.env.REGISTRY_URL[0] === '/') {
+              this.error = "Unable to obtain metadata registry from " + window.location.origin + this.env.REGISTRY_URL + " :" + error;
+          } else {
+              this.error = "Unable to obtain metadata registry from " + this.env.REGISTRY_URL + " :" + error;
+          }
           console.log(error);
       });
       if (window.innerHeight > 500) {
