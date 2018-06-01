@@ -154,8 +154,13 @@ export default {
     }
   },
   created () {
-      axios.get(this.env.REGISTRY_URL).then(response => {
-          //add software
+      var config = {};
+      if (this.env.REGISTRY_URL[0] == '/') {
+          //registry URL is relative, set baseURL to current server
+          config.baseURL = window.location.origin;
+      }
+      axios.get(this.env.REGISTRY_URL, config).then(response => {
+          //process registry response, add each tool
           response.data['@graph'].forEach(tool => {
               console.log("Registered tool " + tool.identifier);
               this.resolve(tool);
