@@ -240,6 +240,7 @@ div#container>div.description {
     border-radius: 25px;
     color: #384d3a;
     box-shadow: 3px 3px #000000a0;
+    font-size: 13px;
 }
 #services {
     width: 100%;
