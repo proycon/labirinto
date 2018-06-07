@@ -24,17 +24,17 @@
           <h2 v-on:mouseover="uncollapse(tool)">{{tool.name}} <span class="version" v-if="tool.version !== undefined && tool.version !== 'unknown' && tool.version !== 'unspecified'">{{tool.version}}</span></h2>
           <div v-show="!collapsed || selectedtool === tool.identifier" class="toolbody">
           <ul v-if="tool.author" class="authors">
-              <li v-for="(author, authorindex) in getAuthors(tool)" :key="author">{{author}}<span v-if="authorindex < getAuthors(tool).length - 1">,&nbsp;</span></li>
+              <li v-for="(author, authorindex) in getAuthors(tool)" :key="authorindex">{{author}}<span v-if="authorindex < getAuthors(tool).length - 1">,&nbsp;</span></li>
           </ul>
           <ul class="affiliations">
               <template v-if="tool.producer">
-                  <li v-for="organization in getOrganizations(tool, 'producer')" :key="organization">{{organization}}</li>
+                  <li v-for="organization in getOrganizations(tool, 'producer')" :key="organization.name">{{organization}}</li>
               </template>
               <template v-if="tool.publisher">
-                  <li v-for="organization in getOrganizations(tool, 'publisher')" :key="organization">{{organization}}</li>
+                  <li v-for="organization in getOrganizations(tool, 'publisher')" :key="organization.name">{{organization}}</li>
               </template>
               <template v-if="tool.funder">
-                  <li v-for="organization in getOrganizations(tool, 'funder')" class="funder" :key="organization">{{organization}}</li>
+                  <li v-for="organization in getOrganizations(tool, 'funder')" class="funder" :key="organization.name">{{organization}}</li>
               </template>
           </ul>
           <div class="description">
@@ -45,8 +45,8 @@
               <li v-if="tool.url" hint="Project website"><icon name="home"></icon>&nbsp;<a :href="tool.url">Website</a></li>
               <li v-if="tool.codeRepository" hint="Source code repository"><icon name="code"></icon>&nbsp;<a :href="tool.codeRepository">Source code</a></li>
               <li v-if="tool.issueTracker" hint="Issue Tracker"><icon name="bug"></icon>&nbsp;<a :href="tool.issueTracker">Issue Tracker</a></li>
-              <li v-if="tool.license" class="license" hint="License"><icon name="copyright" :label="tool.license"></icon>&nbsp;<span>{{getLicense(tool)}}</span></li>
-              <li v-if="tool.audience" class="audience" hint="Intended Audience"><icon name="users" :label="tool.audience"></icon>&nbsp;<span>{{getAudience(tool)}}</span></li>
+              <li v-if="tool.license" class="license" hint="License"><icon name="copyright" :label="getLicense(tool)"></icon>&nbsp;<span>{{getLicense(tool)}}</span></li>
+              <li v-if="tool.audience" class="audience" hint="Intended Audience"><icon name="users" :label="getAudience(tool)"></icon>&nbsp;<span>{{getAudience(tool)}}</span></li>
               <template v-if="tool.programmingLanguage">
                   <li v-if="matchProgLangs(tool,'python')" class="proglang"><icon name="brands/python"></icon>&nbsp; <span>Python</span></li>
                   <li v-if="matchProgLangs(tool,'cython')" class="proglang"><icon name="brands/python"></icon>&nbsp; <span>Cython</span></li>
@@ -69,7 +69,7 @@
               <li v-for="keyword in tool.keywords" :key="keyword">{{keyword}}</li>
           </ul>
           <ul class="entrypoints">
-              <li v-for="entrypoint in tool.entryPoints" v-if="matchEntrypoint(entrypoint)"  :key="entrypoint.urlTemplate" :class="entrypoint.interfaceType == 'WUI' ? 'actionable' : 'inactionable'">
+              <li v-for="entrypoint in tool.entryPoints" v-if="matchEntrypoint(entrypoint)"  :key="(entrypoint.urlTemplate, entrypoint.interfaceType)" :class="entrypoint.interfaceType == 'WUI' ? 'actionable' : 'inactionable'">
                 <icon v-if="entrypoint.interfaceType == 'WUI'" name="sign-in-alt"></icon>
                 <icon v-else-if="entrypoint.interfaceType == 'REST'" name="cog"></icon>
                 <icon v-else-if="entrypoint.interfaceType == 'CLI'" name="terminal"></icon>
