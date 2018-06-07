@@ -5,6 +5,7 @@ import ServiceIndex from '@/components/ServiceIndex'
 Vue.use(Router)
 
 export default new Router({
+  mode: 'history',
   routes: [
     {
       path: '/',
@@ -25,9 +26,40 @@ export default new Router({
           showtoolbar: false,
           showdescription: false,
           initial_filters: [],
-          initial_interfaces: [ "WUI" ],
-          hideheader: true,
-          hidefooter: true
+          initial_interfaces: [ "WUI" ]
+      }
+    },
+    {
+      path: '/webservices',
+      name: 'ServiceIndexWebservice',
+      component: ServiceIndex,
+      props: {
+          showtoolbar: false,
+          showdescription: false,
+          initial_filters: [],
+          initial_interfaces: [ "REST" ]
+      }
+    },
+    {
+      path: '/cli',
+      name: 'ServiceIndexCLI',
+      component: ServiceIndex,
+      props: {
+          showtoolbar: false,
+          showdescription: false,
+          initial_filters: [],
+          initial_interfaces: [ "CLI" ]
+      }
+    },
+    {
+      path: '/lib',
+      name: 'ServiceIndexLIB',
+      component: ServiceIndex,
+      props: {
+          showtoolbar: false,
+          showdescription: false,
+          initial_filters: [],
+          initial_interfaces: [ "LIB" ]
       }
     }
   ]
