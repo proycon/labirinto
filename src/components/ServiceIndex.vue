@@ -1,6 +1,6 @@
 <template>
  <div id="container">
-  <div id="toolbar" :class="{ 'fixedtoolbar': isScrolled }">
+  <div id="toolbar" :class="{ 'fixedtoolbar': isScrolled }" v-if="showtoolbar" >
       <enhanced-check-group v-model="enabled_interfaces" :label="interface_labels" :value="interfaces" inline rounded combine></enhanced-check-group>
       <div id="collapser">
           <enhanced-check v-model="collapsed" label="Collapse?"></enhanced-check>
@@ -16,7 +16,7 @@
           <vue-markdown v-if="details_type === 'markdown'" :source="details_markdown"></vue-markdown>
       </div>
   </div>
-  <div v-html="env.DESCRIPTION" class="description"></div>
+  <div v-html="env.DESCRIPTION" v-if="showdescription" class="description"></div>
   <div v-if="error" class="error">{{error}}</div>
   <div id="tools" v-if="registry_loaded">
       <tool v-for="tool in tools" :key="tool.identifier" :tool="tool" :interfaces="enabled_interfaces" :filters="enabled_filters" :selectedtool="selectedtool" :collapsed="collapsed" />
@@ -26,7 +26,6 @@
 
 <script>
 import axios from 'axios'
-import Vue from 'vue'
 import { EnhancedCheck, EnhancedCheckGroup } from 'vue-enhanced-check'
 import 'vue-awesome/icons'
 import Icon from 'vue-awesome/components/Icon'
@@ -36,6 +35,13 @@ import Tool from './Tool.vue'
 
 export default {
   name: 'ServiceIndex',
+  props: {
+      showtoolbar: { type: Boolean, default: true },
+      showdescription: { type: Boolean, default: true },
+      initial_filters: { type: Array, default: function () { return [ "thirdparty", "remote" ] } },
+      initial_interfaces: { type: Array, default: function () { return [ "WUI", "REST" ] } },
+      collapsed: { type: Boolean, default: false }
+  },
   components: {
     Tool,
     EnhancedCheck,
@@ -51,12 +57,11 @@ export default {
       interfaces: [ "WUI", "REST", "CLI", "LIB", "UNKNOWN" ],
       filter_labels: [ "Third party tools", "Remote Services" ],
       filters: [ "thirdparty", "remote" ],
-      enabled_filters: [ "thirdparty", "remote" ],
-      enabled_interfaces: [ "WUI", "REST" ],
+      enabled_interfaces: this.initial_interfaces,
+      enabled_filters: this.initial_filters,
       registry: {},
       idmap: {},
       registry_loaded: false,
-      collapsed: false,
       isScrolled: false,
       showdetails: false,
       selectedtool: "",

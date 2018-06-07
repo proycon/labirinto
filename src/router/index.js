@@ -9,7 +9,24 @@ export default new Router({
     {
       path: '/',
       name: 'ServiceIndex',
-      component: ServiceIndex
+      component: ServiceIndex,
+      props: {
+          showtoolbar: true,
+          showdescription: true,
+          initial_filters: [ "thirdparty", "remote" ],
+          initial_interfaces: [ "WUI", "REST" ]
+      }
+    },
+    {
+      path: '/web',
+      name: 'ServiceIndexWeb',
+      component: ServiceIndex,
+      props: {
+          showtoolbar: false,
+          showdescription: false,
+          initial_filters: [],
+          initial_interfaces: [ "WUI" ]
+      }
     }
   ]
 })
