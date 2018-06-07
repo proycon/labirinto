@@ -313,31 +313,31 @@ span.version {
 }
 ul.keywords li {
     font-size: 65%;
-    color: #8350a7;
+    color: #89370e;
 }
 ul.entrypoints li {
     display: block;
-    background: #ddd;
+    background: #e1d8d1;
     padding: 2px;
     border-radius: 5px;
     margin-bottom: 2px;
 }
 ul.entrypoints li.actionable {
-    background: #85a989;
+    background: #ff9c00;
 }
 ul.entrypoints li.actionable a {
     color: white;
 }
 ul.entrypoints li a {
-    color: #30503a;
+    color: black;
     font-weight: bold;
     text-decoration: none;
 }
 ul.entrypoints li.actionable:hover {
-    background: #cbcba8;
+    background: #ff9c00;
 }
 ul.entrypoints li:hover a {
-    color: #812c7f;
+    color: #b82b2b;
 }
 ul.entrypoints span.url {
     display: block;
@@ -352,11 +352,11 @@ ul.entrypoints span.description {
 }
 ul.affiliations li {
     display: block;
-    color: #85a989;
+    color: #f25609;
     font-size: 80%;
 }
 ul.affiliations li.funder {
-    color: #4c696b;
+    color: #89370e;
     font-style: italic;
 }
 li.publication .authors, li.publication .journal, li.publication .date {

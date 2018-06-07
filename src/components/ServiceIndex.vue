@@ -203,7 +203,7 @@ div.tool {
     float: left;
     width: 30%;
     background: #ffffff;
-    border: 1px solid #85a989;
+    border: 1px solid #ff9c00;
     border-radius: 20px;
     margin: 10px;
     margin-bottom: 20px;
@@ -213,7 +213,7 @@ div.tool {
     max-width: 580px;
 }
 div.tool:hover {
-    background: #e9f3eb;
+    background: #f4ebdd;
 }
 #toolbar  {
     width: 100%;
@@ -227,6 +227,7 @@ div.tool:hover {
     margin: 0 0;
     padding: 0;
     padding-bottom: 20px;
+    min-height: 1200px;
 }
 div#container>div.description {
     padding: 10px;

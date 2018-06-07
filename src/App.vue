@@ -151,6 +151,7 @@ export default {
     position: absolute;
     top: 0px;
     left: 0px;
+    height: 183px;
 }
 #logoright {
     position: absolute;
@@ -168,29 +169,39 @@ export default {
   padding: 0 0;
 }
 a {
-  color: #384d3a;
+  color: #b82b2b;
 }
 body {
-  background: url(./assets/maze.png) 0 0 repeat;
+  background: #e1d8d1 url("./assets/diagonals.png") 0 0 repeat fixed;
   margin: 0 0;
   padding: 0 0;
 }
-
 #header {
-    background-color: #cbd7cc;
+    background-color: #b82b2b;
     width: 100%;
     max-width: 100%;
     min-height: 20px;
-    border-bottom: 3px solid #85a989;
+    border-bottom: 3px solid #ff9c00; /* #f45709;*/
+    color: white;
 }
-
+#header h1,h2 {
+    color: white;
+}
+#footer a {
+    color: white;
+    font-style: italic;
+}
+a:hover {
+    color: #5c0f0f;
+}
 #footer {
-    position: fixed;
+    clear: both;
+    color: white;
     bottom: 0px;
-    background-color: #cbd7cc;
+    background-color: #b82b2b;
     width: 100%;
     min-height: 20px;
-    border-top: 3px solid #85a989;
+    border-top: 3px solid #f45709;
     padding-top: 5px;
     font-family: monospace;
     font-size: 60%;
@@ -198,7 +209,7 @@ body {
 h1, h2 {
   font-family: Lato;
   font-weight: medium;
-  color: #384d3a;
+  color: #b82b2b;
 }
 h1 {
   font-family: Lato;
