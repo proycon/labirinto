@@ -1,12 +1,12 @@
 <template>
   <div id="app">
-    <div id="header" v:if="!iniframe()">
+    <div id="header" v-if="!iniframe">
         <img v-if="env.LOGO_LEFT && !smallscreen" id="logoleft" src="./assets/logo_left.png"/>
         <h1>{{env.TITLE}}</h1>
         <img v-if="env.LOGO_RIGHT && !smallscreen" id="logoright" src="./assets/logo_right.png"/>
     </div>
     <router-view/>
-    <div id="footer" v:if="!iniframe()">
+    <div id="footer" v-if="!iniframe">
         <strong>{{env.TITLE}}</strong> - powered by <a href="https://github.com/proycon/labirinto">Labirinto</a> v0.1.4 - <a :href="env.REGISTRY_URL">View raw metadata registry</a>
     </div>
   </div>
