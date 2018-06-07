@@ -42,7 +42,7 @@
                   <li v-if="matchProgLangs(tool,'go')" class="proglang"><icon name="brands/google"></icon>&nbsp; <span>Go</span></li>
                   <li v-if="matchProgLangs(tool,'lua')" class="proglang"><icon name="moon"></icon>&nbsp; <span>Lua</span></li>
               </template>
-              <li class="link"><icon name="database" @click="showMetadata(tool)"></icon>&nbsp;<span @click="showMetadata(tool)">Metadata</span></li>
+              <li class="link"><icon name="database" @click="$emit('show-metadata', tool)"></icon>&nbsp;<span @click="$emit('show-metadata', tool)">Metadata</span></li>
           </ul>
           <ul v-if="tool.keywords" class="keywords">
               <li v-for="keyword in tool.keywords" :key="keyword">{{keyword}}</li>
@@ -74,7 +74,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import 'vue-awesome/icons'
 import Icon from 'vue-awesome/components/Icon'
 
@@ -93,10 +92,6 @@ export default {
   data () {
     return {
       env: process.env,
-      showdetails: false,
-      details_markdown: "",
-      details_json: {},
-      details_type: "json",
       enable_readmore: false
     }
   },
@@ -285,27 +280,6 @@ export default {
           }).some(function (proglang) {
               var pattern = " " + proglang.toLowerCase() + " ";
               return pattern.toLowerCase().includes(' ' + lang + ' ');
-          });
-      },
-      showMetadata: function (tool) {
-          this.details_json = tool;
-          this.details_type = "json";
-          this.showdetails = true;
-          console.log(tool);
-      },
-      showReadMe: function (tool) {
-          var url;
-          if ((tool.readme.includes('github.com')) && (!tool.readme.includes('raw')) && (tool.readme.includes('blob'))) {
-              //url is not raw yet
-              url = tool.readme.replace('blob/', 'raw/');
-          } else {
-              url = tool.readme;
-          }
-          axios.get(url).then(response => {
-              //add software
-              this.details_type = "markdown";
-              this.details_markdown = response;
-              this.showdetails = true;
           });
       }
   }

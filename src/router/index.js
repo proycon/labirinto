@@ -25,7 +25,9 @@ export default new Router({
           showtoolbar: false,
           showdescription: false,
           initial_filters: [],
-          initial_interfaces: [ "WUI" ]
+          initial_interfaces: [ "WUI" ],
+          hideheader: true,
+          hidefooter: true
       }
     }
   ]

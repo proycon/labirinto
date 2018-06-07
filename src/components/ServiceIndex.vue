@@ -12,14 +12,14 @@
   <div id="details" v-if="showdetails">
       <button @click="showdetails=false">close window</button><br />
       <div class="scrollable">
-          <vue-json-pretty v-if="details_type === 'json'" :data="details_json" deep="2"></vue-json-pretty>
+          <vue-json-pretty v-if="details_type === 'json'" :data="details_json" :deep="metadata_depth"></vue-json-pretty>
           <vue-markdown v-if="details_type === 'markdown'" :source="details_markdown"></vue-markdown>
       </div>
   </div>
   <div v-html="env.DESCRIPTION" v-if="showdescription" class="description"></div>
   <div v-if="error" class="error">{{error}}</div>
   <div id="tools" v-if="registry_loaded">
-      <tool v-for="tool in tools" :key="tool.identifier" :tool="tool" :interfaces="enabled_interfaces" :filters="enabled_filters" :selectedtool="selectedtool" :collapsed="collapsed" />
+      <tool v-for="tool in tools" :key="tool.identifier" :tool="tool" :interfaces="enabled_interfaces" :filters="enabled_filters" :selectedtool="selectedtool" :collapsed="collapsed" v-on:show-metadata="showMetadata" />
   </div>
  </div>
 </template>
@@ -31,7 +31,7 @@ import 'vue-awesome/icons'
 import Icon from 'vue-awesome/components/Icon'
 import VueMarkdown from 'vue-markdown'
 import VueJsonPretty from 'vue-json-pretty'
-import Tool from './Tool.vue'
+import Tool from '@/components/Tool'
 
 export default {
   name: 'ServiceIndex',
@@ -40,7 +40,9 @@ export default {
       showdescription: { type: Boolean, default: true },
       initial_filters: { type: Array, default: function () { return [ "thirdparty", "remote" ] } },
       initial_interfaces: { type: Array, default: function () { return [ "WUI", "REST" ] } },
-      collapsed: { type: Boolean, default: false }
+      collapsed: { type: Boolean, default: false },
+      hideheader: { type: Boolean, default: false },
+      hidefooter: { type: Boolean, default: false }
   },
   components: {
     Tool,
@@ -64,6 +66,7 @@ export default {
       registry_loaded: false,
       isScrolled: false,
       showdetails: false,
+      metadata_depth: 2,
       selectedtool: "",
       details_markdown: "",
       details_json: {},
@@ -207,6 +210,7 @@ div.tool {
     padding: 10px;
     font-size: 80%;
     min-width: 320px;
+    max-width: 580px;
 }
 div.tool:hover {
     background: #e9f3eb;
