@@ -19,7 +19,7 @@
   <div v-html="env.DESCRIPTION" v-if="showdescription" class="description"></div>
   <div v-if="error" class="error">{{error}}</div>
   <div id="tools" v-if="registry_loaded">
-      <tool v-for="tool in tools" :key="tool.identifier" :tool="tool" :interfaces="enabled_interfaces" :filters="enabled_filters" :selectedtool="selectedtool" :collapsed="collapsed" v-on:show-metadata="showMetadata" />
+      <tool v-for="tool in tools" :key="tool.identifier" :tool="tool" :interfaces="enabled_interfaces" :filters="enabled_filters" :selectedtool.sync="selectedtool" :collapsed="collapsed" v-on:show-metadata="showMetadata" v-on:select-tool="selectedtool =  $event;" />
   </div>
  </div>
 </template>
@@ -40,7 +40,7 @@ export default {
       showdescription: { type: Boolean, default: true },
       initial_filters: { type: Array, default: function () { return [ "thirdparty", "remote" ] } },
       initial_interfaces: { type: Array, default: function () { return [ "WUI", "REST" ] } },
-      collapsed: { type: Boolean, default: false },
+      initial_collapsed: { type: Boolean, default: false },
       hideheader: { type: Boolean, default: false },
       hidefooter: { type: Boolean, default: false }
   },
@@ -59,6 +59,7 @@ export default {
       interfaces: [ "WUI", "REST", "CLI", "LIB", "UNKNOWN" ],
       filter_labels: [ "Third party tools", "Remote Services" ],
       filters: [ "thirdparty", "remote" ],
+      collapsed: this.initial_collapsed,
       enabled_interfaces: this.initial_interfaces,
       enabled_filters: this.initial_filters,
       registry: {},

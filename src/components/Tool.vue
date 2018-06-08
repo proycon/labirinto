@@ -1,7 +1,10 @@
 <template>
-    <div class="tool" v-if="matchTool(tool)">
-          <h2 v-on:mouseover="uncollapse(tool)">{{tool.name}} <span class="version" v-if="tool.version !== undefined && tool.version !== 'unknown' && tool.version !== 'unspecified'">{{tool.version}}</span></h2>
-          <div v-show="!collapsed || selectedtool === tool.identifier" class="toolbody">
+    <div class="tool" v-if="matchTool(tool)" v-on:mouseenter="hover = true" v-on:mouseleave="hover = false">
+          <h2>{{tool.name}} <span class="version" v-if="tool.version !== undefined && tool.version !== 'unknown' && tool.version !== 'unspecified'">{{tool.version}}</span></h2>
+          <div v-show="collapsed && !hover" class="description_short">
+              {{tool.description|truncate(30,true)}}
+          </div>
+          <div v-show="!collapsed || hover" class="toolbody">
           <ul v-if="tool.author" class="authors">
               <li v-for="(author, authorindex) in getAuthors(tool)" :key="authorindex">{{author}}<span v-if="authorindex < getAuthors(tool).length - 1">,&nbsp;</span></li>
           </ul>
@@ -84,7 +87,6 @@ export default {
   },
   props: {
       tool: Object,
-      selectedtool: String,
       collapsed: Boolean,
       interfaces: Array,
       filters: Array
@@ -92,13 +94,11 @@ export default {
   data () {
     return {
       env: process.env,
-      enable_readmore: false
+      enable_readmore: false,
+      hover: false
     }
   },
   methods: {
-      uncollapse: function (tool) {
-         this.selectedtool = tool.identifier;
-      },
       matchTool: function (tool) {
           if (!this.filters.includes("thirdparty")) {
               if (this.isThirdParty(tool)) {
@@ -402,5 +402,8 @@ button {
     overflow: scroll;
     width: 100%;
     height: 95%;
+}
+.description_short {
+    font-size: 11px;
 }
 </style>
