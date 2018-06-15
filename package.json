@@ -30,6 +30,7 @@
     "axios": "^0.18.0",
     "node-sass": "^4.9.0",
     "sass-loader": "^7.0.1",
+    "v-tooltip": "^2.0.0-rc.33",
     "vue": "^2.5.2",
     "vue-awesome": "^3.0.0",
     "vue-enhanced-check": "^1.5.1",

@@ -24,10 +24,10 @@
               <button @click="showReadMe(tool)" v-if="tool.readme !== undefined && enable_readmore">read more...</button>
           </div>
           <ul class="properties">
-              <li v-if="tool.url" hint="Project website"><icon name="home"></icon>&nbsp;<a :href="tool.url">Website</a></li>
-              <li v-if="tool.codeRepository" hint="Source code repository"><icon name="code"></icon>&nbsp;<a :href="tool.codeRepository">Source code</a></li>
-              <li v-if="tool.issueTracker" hint="Issue Tracker"><icon name="bug"></icon>&nbsp;<a :href="tool.issueTracker">Issue Tracker</a></li>
-              <li v-if="tool.license" class="license" hint="License"><icon name="copyright" :label="getLicense(tool)"></icon>&nbsp;<span>{{getLicense(tool)}}</span></li>
+              <li v-if="tool.url" v-tooltip="'Project website'"><icon name="home"></icon>&nbsp;<a :href="tool.url">Website</a></li>
+              <li v-if="tool.codeRepository" v-tooltip="'Source code repository'"><icon name="code"></icon>&nbsp;<a :href="tool.codeRepository">Source code</a></li>
+              <li v-if="tool.issueTracker" v-tooltip="'Issue Tracker'"><icon name="bug"></icon>&nbsp;<a :href="tool.issueTracker">Issue Tracker</a></li>
+              <li v-if="tool.license" class="license" v-tooltip="'License'"><icon name="copyright"></icon>&nbsp;<span>{{getLicense(tool)}}</span></li>
               <template v-if="tool.programmingLanguage">
                   <li v-if="matchProgLangs(tool,'python')" class="proglang"><icon name="brands/python"></icon>&nbsp; <span>Python</span></li>
                   <li v-if="matchProgLangs(tool,'cython')" class="proglang"><icon name="brands/python"></icon>&nbsp; <span>Cython</span></li>
@@ -44,14 +44,14 @@
                   <li v-if="matchProgLangs(tool,'go')" class="proglang"><icon name="brands/google"></icon>&nbsp; <span>Go</span></li>
                   <li v-if="matchProgLangs(tool,'lua')" class="proglang"><icon name="moon"></icon>&nbsp; <span>Lua</span></li>
               </template>
-              <li v-if="tool.audience" class="audience" hint="Intended Audience"><icon name="users" :label="getAudience(tool)"></icon>&nbsp;<span>{{getAudience(tool)}}</span></li>
+              <li v-if="tool.audience" class="audience" v-tooltip="'Intended Audience'"><icon name="users" :label="getAudience(tool)"></icon>&nbsp;<span>{{getAudience(tool)}}</span></li>
               <!-- begin CLARIN specific -->
-              <li v-if="tool.researchdomain" class="researchdomain" hint="Research Domain"><icon name="graduation-cap"></icon>&nbsp;<span>{{getPropertyValue(tool, 'researchDomain')}}</span></li>
-              <li v-if="tool.linguisticssubject" class="linguisticssubject" hint="Linguistics Subject">&nbsp;<span>({{getPropertyValue(tool, 'linguisticsSubject')}})</span></li>
-              <li v-if="tool.researchphase" class="researchphase" hint="Research Phase"><icon name="recycle"></icon>&nbsp;<span>{{getPropertyValue(tool, 'researchPhase')}}</span></li>
+              <li v-if="tool.researchdomain" class="researchdomain" v-tooltip="'Research Domain'"><icon name="graduation-cap"></icon>&nbsp;<span>{{getPropertyValue(tool, 'researchDomain')}}</span></li>
+              <li v-if="tool.linguisticssubject" class="linguisticssubject" v-tooltip="'Linguistics Subject'">&nbsp;<span>({{getPropertyValue(tool, 'linguisticsSubject')}})</span></li>
+              <li v-if="tool.researchphase" class="researchphase" v-tooltip="'Research Phase'"><icon name="recycle"></icon>&nbsp;<span>{{getPropertyValue(tool, 'researchPhase')}}</span></li>
               <!-- end CLARIN specific -->
-              <li v-if="tool.dateCreated" class="datecreated" hint="Date First Created"><icon name="clock"></icon>&nbsp;<span>{{tool.dateCreated}}</span></li>
-              <li class="link"><icon name="database" @click="$emit('show-metadata', tool)"><icon name="database" :label="getResearchdomain(tool)"></icon>&nbsp;<span @click="$emit('show-metadata', tool)">Metadata</span></li>
+              <li v-if="tool.dateCreated" class="datecreated" v-tooltip="'Date First Created'"><icon name="clock"></icon>&nbsp;<span>{{tool.dateCreated}}</span></li>
+              <li class="link"><icon name="database" v-tooltip="'Raw metadata (Codemeta, JSON-LD)'" @click="$emit('show-metadata', tool)"></icon>&nbsp;<span @click="$emit('show-metadata', tool)">Metadata</span></li>
           </ul>
           <ul v-if="tool.keywords" class="keywords">
               <li v-for="keyword in tool.keywords" :key="keyword">{{keyword}}</li>
@@ -86,8 +86,13 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import 'vue-awesome/icons'
 import Icon from 'vue-awesome/components/Icon'
+import VTooltip from 'v-tooltip'
+
+Vue.use(VTooltip, { 'defaultClass': 'tooltip' });
+VTooltip.options.defaultClass = 'tooltip'
 
 export default {
   name: 'tool',
@@ -313,7 +318,7 @@ span.version {
     font-size: 60%;
     font-style: italic;
 }
-.license span, div.tool .proglang span, div.tool .audience span, div.tool .researchphase span, div.tool .researchdomain span, div.tool .linguisticssubject span {
+.license span, div.tool .proglang span, div.tool .audience span, div.tool .researchphase span, div.tool .researchdomain span, div.tool .linguisticssubject span, div.tool .datecreated span {
     font-size: 65%;
 }
 .tool .link span {
@@ -415,4 +420,5 @@ button {
 .description_short {
     font-size: 11px;
 }
+
 </style>
