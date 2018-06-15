@@ -46,18 +46,18 @@
               </template>
               <li v-if="tool.audience" class="audience" v-tooltip="'Intended Audience'"><icon name="users" :label="getAudience(tool)"></icon>&nbsp;<span>{{getAudience(tool)}}</span></li>
               <!-- begin CLARIN specific -->
-              <li v-if="tool.researchdomain" class="researchdomain" v-tooltip="'Research Domain'"><icon name="graduation-cap"></icon>&nbsp;<span>{{getPropertyValue(tool, 'researchDomain')}}</span></li>
-              <li v-if="tool.linguisticssubject" class="linguisticssubject" v-tooltip="'Linguistics Subject'">&nbsp;<span>({{getPropertyValue(tool, 'linguisticsSubject')}})</span></li>
-              <li v-if="tool.researchphase" class="researchphase" v-tooltip="'Research Phase'"><icon name="recycle"></icon>&nbsp;<span>{{getPropertyValue(tool, 'researchPhase')}}</span></li>
+              <li v-if="tool.researchDomain" class="researchdomain" v-tooltip="'Research Domain'"><icon name="graduation-cap"></icon>&nbsp;<span>{{getPropertyValue(tool, 'researchDomain')}}</span></li>
+              <li v-if="tool.linguisticsSubject" class="linguisticssubject" v-tooltip="'Linguistics Subject'">&nbsp;<span>[{{getPropertyValue(tool, 'linguisticsSubject')}}]</span></li>
+              <li v-if="tool.researchPhase" class="researchphase" v-tooltip="'Research Phase'"><icon name="recycle"></icon>&nbsp;<span>{{getPropertyValue(tool, 'researchPhase')}}</span></li>
               <!-- end CLARIN specific -->
               <li v-if="tool.dateCreated" class="datecreated" v-tooltip="'Date First Created'"><icon name="clock"></icon>&nbsp;<span>{{tool.dateCreated}}</span></li>
               <li class="link" v-tooltip="'Raw metadata (Codemeta, JSON-LD), click to view'"><icon name="database" @click="$emit('show-metadata', tool)"></icon>&nbsp;<span @click="$emit('show-metadata', tool)">Metadata</span></li>
           </ul>
-          <ul v-if="tool.keywords" class="keywords">
+          <ul v-if="tool.keywords" class="keywords" v-tooltip="'Keywords'">
               <li v-for="keyword in tool.keywords" :key="keyword">{{keyword}}</li>
           </ul>
-          <ul v-if="tool.tooltask" class="keywords"> <!-- CLARIN specific -->
-              <li v-for="keyword in tool.tooltask" :key="keyword">{{keyword}}</li>
+          <ul v-if="tool.toolTask" class="keywords" v-tooltip="'Tool tasks'"> <!-- CLARIN specific -->
+              <li v-for="keyword in tool.toolTask" :key="keyword">{{keyword}}</li>
           </ul>
           <ul class="entrypoints">
               <li v-for="entrypoint in tool.entryPoints" v-if="matchEntrypoint(entrypoint)"  :key="(entrypoint.urlTemplate, entrypoint.interfaceType)" :class="entrypoint.interfaceType == 'WUI' ? 'actionable' : 'inactionable'">
@@ -320,6 +320,9 @@ span.version {
 }
 .license span, div.tool .proglang span, div.tool .audience span, div.tool .researchphase span, div.tool .researchdomain span, div.tool .linguisticssubject span, div.tool .datecreated span {
     font-size: 65%;
+}
+div.tool .linguisticssubject span {
+    font-style: italic;
 }
 .tool .link span {
     font-size: 65%;
