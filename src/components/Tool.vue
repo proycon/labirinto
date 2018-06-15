@@ -28,7 +28,6 @@
               <li v-if="tool.codeRepository" hint="Source code repository"><icon name="code"></icon>&nbsp;<a :href="tool.codeRepository">Source code</a></li>
               <li v-if="tool.issueTracker" hint="Issue Tracker"><icon name="bug"></icon>&nbsp;<a :href="tool.issueTracker">Issue Tracker</a></li>
               <li v-if="tool.license" class="license" hint="License"><icon name="copyright" :label="getLicense(tool)"></icon>&nbsp;<span>{{getLicense(tool)}}</span></li>
-              <li v-if="tool.audience" class="audience" hint="Intended Audience"><icon name="users" :label="getAudience(tool)"></icon>&nbsp;<span>{{getAudience(tool)}}</span></li>
               <template v-if="tool.programmingLanguage">
                   <li v-if="matchProgLangs(tool,'python')" class="proglang"><icon name="brands/python"></icon>&nbsp; <span>Python</span></li>
                   <li v-if="matchProgLangs(tool,'cython')" class="proglang"><icon name="brands/python"></icon>&nbsp; <span>Cython</span></li>
@@ -40,15 +39,24 @@
                   <li v-if="matchProgLangs(tool,'bash')" class="proglang"><icon name="terminal"></icon>&nbsp; <span>Shell</span></li>
                   <li v-else-if="matchProgLangs(tool,'shell')" class="proglang"><icon name="terminal"></icon>&nbsp; <span>Shell</span></li>
                   <li v-if="matchProgLangs(tool,'erlang')" class="proglang"><icon name="brands/erlang"></icon>&nbsp; <span>Erlang</span></li>
-                  <li v-if="matchProgLangs(tool,'r')" class="proglang"><icon name="register"></icon>&nbsp; <span>R</span></li>
+                  <li v-if="matchProgLangs(tool,'r')" class="proglang"><icon name="brands/r-project"></icon>&nbsp; <span>R</span></li>
                   <li v-if="matchProgLangs(tool,'perl')" class="proglang"><icon name="brands/product-hunt"></icon>&nbsp; <span>Perl</span></li>
                   <li v-if="matchProgLangs(tool,'go')" class="proglang"><icon name="brands/google"></icon>&nbsp; <span>Go</span></li>
                   <li v-if="matchProgLangs(tool,'lua')" class="proglang"><icon name="moon"></icon>&nbsp; <span>Lua</span></li>
               </template>
-              <li class="link"><icon name="database" @click="$emit('show-metadata', tool)"></icon>&nbsp;<span @click="$emit('show-metadata', tool)">Metadata</span></li>
+              <li v-if="tool.audience" class="audience" hint="Intended Audience"><icon name="users" :label="getAudience(tool)"></icon>&nbsp;<span>{{getAudience(tool)}}</span></li>
+              <!-- begin CLARIN specific -->
+              <li v-if="tool.researchdomain" class="researchdomain" hint="Research Domain"><icon name="graduation-cap" :label="getResearchdomain(tool)"></icon>&nbsp;<span>{{getPropertyValue(tool, 'researchDomain')}}</span></li>
+              <li v-if="tool.linguisticssubject" class="linguisticssubject" hint="Linguistics Subject">&nbsp;<span>({{getPropertyValue(tool, 'linguisticsSubject')}})</span></li>
+              <li v-if="tool.researchphase" class="researchphase" hint="Research Phase">&nbsp;<span>{{getPropertyValue(tool, 'researchPhase')}}</span></li>
+              <!-- end CLARIN specific -->
+              <li class="link"><icon name="database" @click="$emit('show-metadata', tool)"><icon name="graduation-cap" :label="getResearchdomain(tool)"></icon>&nbsp;<span @click="$emit('show-metadata', tool)">Metadata</span></li>
           </ul>
           <ul v-if="tool.keywords" class="keywords">
               <li v-for="keyword in tool.keywords" :key="keyword">{{keyword}}</li>
+          </ul>
+          <ul v-if="tool.tooltask" class="keywords"> <!-- CLARIN specific -->
+              <li v-for="keyword in tool.tooltask" :key="keyword">{{keyword}}</li>
           </ul>
           <ul class="entrypoints">
               <li v-for="entrypoint in tool.entryPoints" v-if="matchEntrypoint(entrypoint)"  :key="(entrypoint.urlTemplate, entrypoint.interfaceType)" :class="entrypoint.interfaceType == 'WUI' ? 'actionable' : 'inactionable'">
@@ -304,7 +312,7 @@ span.version {
     font-size: 60%;
     font-style: italic;
 }
-.license span, div.tool .proglang span, div.tool .audience span {
+.license span, div.tool .proglang span, div.tool .audience span, div.tool .researchphase span, div.tool .researchdomain span, div.tool .linguisticssubject span {
     font-size: 65%;
 }
 .tool .link span {
