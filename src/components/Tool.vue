@@ -46,11 +46,12 @@
               </template>
               <li v-if="tool.audience" class="audience" hint="Intended Audience"><icon name="users" :label="getAudience(tool)"></icon>&nbsp;<span>{{getAudience(tool)}}</span></li>
               <!-- begin CLARIN specific -->
-              <li v-if="tool.researchdomain" class="researchdomain" hint="Research Domain"><icon name="graduation-cap" :label="getResearchdomain(tool)"></icon>&nbsp;<span>{{getPropertyValue(tool, 'researchDomain')}}</span></li>
+              <li v-if="tool.researchdomain" class="researchdomain" hint="Research Domain"><icon name="graduation-cap"></icon>&nbsp;<span>{{getPropertyValue(tool, 'researchDomain')}}</span></li>
               <li v-if="tool.linguisticssubject" class="linguisticssubject" hint="Linguistics Subject">&nbsp;<span>({{getPropertyValue(tool, 'linguisticsSubject')}})</span></li>
-              <li v-if="tool.researchphase" class="researchphase" hint="Research Phase">&nbsp;<span>{{getPropertyValue(tool, 'researchPhase')}}</span></li>
+              <li v-if="tool.researchphase" class="researchphase" hint="Research Phase"><icon name="recycle"></icon>&nbsp;<span>{{getPropertyValue(tool, 'researchPhase')}}</span></li>
               <!-- end CLARIN specific -->
-              <li class="link"><icon name="database" @click="$emit('show-metadata', tool)"><icon name="graduation-cap" :label="getResearchdomain(tool)"></icon>&nbsp;<span @click="$emit('show-metadata', tool)">Metadata</span></li>
+              <li v-if="tool.dateCreated" class="datecreated" hint="Date First Created"><icon name="clock"></icon>&nbsp;<span>{{tool.dateCreated}}</span></li>
+              <li class="link"><icon name="database" @click="$emit('show-metadata', tool)"><icon name="database" :label="getResearchdomain(tool)"></icon>&nbsp;<span @click="$emit('show-metadata', tool)">Metadata</span></li>
           </ul>
           <ul v-if="tool.keywords" class="keywords">
               <li v-for="keyword in tool.keywords" :key="keyword">{{keyword}}</li>
