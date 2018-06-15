@@ -24,25 +24,25 @@
               <button @click="showReadMe(tool)" v-if="tool.readme !== undefined && enable_readmore">read more...</button>
           </div>
           <ul class="properties">
-              <li v-if="tool.url" v-tooltip="'Project website'"><icon name="home"></icon>&nbsp;<a :href="tool.url">Website</a></li>
-              <li v-if="tool.codeRepository" v-tooltip="'Source code repository'"><icon name="code"></icon>&nbsp;<a :href="tool.codeRepository">Source code</a></li>
-              <li v-if="tool.issueTracker" v-tooltip="'Issue Tracker'"><icon name="bug"></icon>&nbsp;<a :href="tool.issueTracker">Issue Tracker</a></li>
+              <li v-if="tool.url"><icon name="home"></icon>&nbsp;<a :href="tool.url">Website</a></li>
+              <li v-if="tool.codeRepository"><icon name="code"></icon>&nbsp;<a :href="tool.codeRepository">Source code</a></li>
+              <li v-if="tool.issueTracker"><icon name="bug"></icon>&nbsp;<a :href="tool.issueTracker">Issue Tracker</a></li>
               <li v-if="tool.license" class="license" v-tooltip="'License'"><icon name="copyright"></icon>&nbsp;<span>{{getLicense(tool)}}</span></li>
               <template v-if="tool.programmingLanguage">
-                  <li v-if="matchProgLangs(tool,'python')" class="proglang"><icon name="brands/python"></icon>&nbsp; <span>Python</span></li>
-                  <li v-if="matchProgLangs(tool,'cython')" class="proglang"><icon name="brands/python"></icon>&nbsp; <span>Cython</span></li>
-                  <li v-if="matchProgLangs(tool,'javascript')" class="proglang"><icon name="brands/js"></icon>&nbsp; <span>Javascript</span></li>
-                  <li v-if="matchProgLangs(tool,'java')" class="proglang"><icon name="brands/java"></icon>&nbsp; <span>Java</span></li>
-                  <li v-if="matchProgLangs(tool,'c++')" class="proglang"><icon name="closed-captioning"></icon>&nbsp; <span>C++</span></li>
-                  <li v-else-if="matchProgLangs(tool,'cpp')" class="proglang"><icon name="closed-captioning"></icon>&nbsp; <span>C++</span></li>
-                  <li v-if="matchProgLangs(tool,'php')" class="proglang"><icon name="brands/php"></icon>&nbsp; <span>PHP</span></li>
-                  <li v-if="matchProgLangs(tool,'bash')" class="proglang"><icon name="terminal"></icon>&nbsp; <span>Shell</span></li>
-                  <li v-else-if="matchProgLangs(tool,'shell')" class="proglang"><icon name="terminal"></icon>&nbsp; <span>Shell</span></li>
-                  <li v-if="matchProgLangs(tool,'erlang')" class="proglang"><icon name="brands/erlang"></icon>&nbsp; <span>Erlang</span></li>
-                  <li v-if="matchProgLangs(tool,'r')" class="proglang"><icon name="brands/r-project"></icon>&nbsp; <span>R</span></li>
-                  <li v-if="matchProgLangs(tool,'perl')" class="proglang"><icon name="brands/product-hunt"></icon>&nbsp; <span>Perl</span></li>
-                  <li v-if="matchProgLangs(tool,'go')" class="proglang"><icon name="brands/google"></icon>&nbsp; <span>Go</span></li>
-                  <li v-if="matchProgLangs(tool,'lua')" class="proglang"><icon name="moon"></icon>&nbsp; <span>Lua</span></li>
+                  <li v-if="matchProgLangs(tool,'python')" class="proglang" v-tooltip="'Programming Language'"><icon name="brands/python"></icon>&nbsp; <span>Python</span></li>
+                  <li v-if="matchProgLangs(tool,'cython')" class="proglang" v-tooltip="'Programming Language'"><icon name="brands/python"></icon>&nbsp; <span>Cython</span></li>
+                  <li v-if="matchProgLangs(tool,'javascript')" class="proglang" v-tooltip="'Programming Language'"><icon name="brands/js"></icon>&nbsp; <span>Javascript</span></li>
+                  <li v-if="matchProgLangs(tool,'java')" class="proglang" v-tooltip="'Programming Language'"><icon name="brands/java"></icon>&nbsp; <span>Java</span></li>
+                  <li v-if="matchProgLangs(tool,'c++')" class="proglang" v-tooltip="'Programming Language'"><icon name="closed-captioning"></icon>&nbsp; <span>C++</span></li>
+                  <li v-else-if="matchProgLangs(tool,'cpp')" class="proglang" v-tooltip="'Programming Language'"><icon name="closed-captioning"></icon>&nbsp; <span>C++</span></li>
+                  <li v-if="matchProgLangs(tool,'php')" class="proglang" v-tooltip="'Programming Language'"><icon name="brands/php"></icon>&nbsp; <span>PHP</span></li>
+                  <li v-if="matchProgLangs(tool,'bash')" class="proglang" v-tooltip="'Programming Language'"><icon name="terminal"></icon>&nbsp; <span>Shell</span></li>
+                  <li v-else-if="matchProgLangs(tool,'shell')" class="proglang" v-tooltip="'Programming Language'"><icon name="terminal"></icon>&nbsp; <span>Shell</span></li>
+                  <li v-if="matchProgLangs(tool,'erlang')" class="proglang" v-tooltip="'Programming Language'"><icon name="brands/erlang"></icon>&nbsp; <span>Erlang</span></li>
+                  <li v-if="matchProgLangs(tool,'r')" class="proglang" v-tooltip="'Programming Language'"><icon name="brands/r-project"></icon>&nbsp; <span>R</span></li>
+                  <li v-if="matchProgLangs(tool,'perl')" class="proglang" v-tooltip="'Programming Language'"><icon name="brands/product-hunt"></icon>&nbsp; <span>Perl</span></li>
+                  <li v-if="matchProgLangs(tool,'go')" class="proglang" v-tooltip="'Programming Language'"><icon name="brands/google"></icon>&nbsp; <span>Go</span></li>
+                  <li v-if="matchProgLangs(tool,'lua')" class="proglang" v-tooltip="'Programming Language'"><icon name="moon"></icon>&nbsp; <span>Lua</span></li>
               </template>
               <li v-if="tool.audience" class="audience" v-tooltip="'Intended Audience'"><icon name="users" :label="getAudience(tool)"></icon>&nbsp;<span>{{getAudience(tool)}}</span></li>
               <!-- begin CLARIN specific -->
@@ -51,7 +51,7 @@
               <li v-if="tool.researchphase" class="researchphase" v-tooltip="'Research Phase'"><icon name="recycle"></icon>&nbsp;<span>{{getPropertyValue(tool, 'researchPhase')}}</span></li>
               <!-- end CLARIN specific -->
               <li v-if="tool.dateCreated" class="datecreated" v-tooltip="'Date First Created'"><icon name="clock"></icon>&nbsp;<span>{{tool.dateCreated}}</span></li>
-              <li class="link"><icon name="database" v-tooltip="'Raw metadata (Codemeta, JSON-LD)'" @click="$emit('show-metadata', tool)"></icon>&nbsp;<span @click="$emit('show-metadata', tool)">Metadata</span></li>
+              <li class="link" v-tooltip="'Raw metadata (Codemeta, JSON-LD), click to view'"><icon name="database" @click="$emit('show-metadata', tool)"></icon>&nbsp;<span @click="$emit('show-metadata', tool)">Metadata</span></li>
           </ul>
           <ul v-if="tool.keywords" class="keywords">
               <li v-for="keyword in tool.keywords" :key="keyword">{{keyword}}</li>
