@@ -55,9 +55,9 @@
           </ul>
           <ul v-if="tool.keywords" class="keywords" v-tooltip="'Keywords'">
               <li v-for="keyword in tool.keywords" :key="keyword">{{keyword}}</li>
-          </ul>
-          <ul v-if="tool.toolTask" class="keywords" v-tooltip="'Tool tasks'"> <!-- CLARIN specific -->
-              <li v-for="keyword in tool.toolTask" :key="keyword">{{keyword}}</li>
+              <template v-if="tool.toolTask">
+                  <li v-for="keyword in tool.toolTask" v-if="tool.keywords && tool.keywords.indexOf(keyword) == -1" :key="keyword">{{keyword}}</li>
+              </template>
           </ul>
           <ul class="entrypoints">
               <li v-for="entrypoint in tool.entryPoints" v-if="matchEntrypoint(entrypoint)"  :key="(entrypoint.urlTemplate, entrypoint.interfaceType)" :class="entrypoint.interfaceType == 'WUI' ? 'actionable' : 'inactionable'">
