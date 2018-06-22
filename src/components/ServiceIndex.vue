@@ -87,7 +87,7 @@ export default {
           response.data['@graph'].forEach(tool => {
               console.log("Registered tool " + tool.identifier);
               this.resolve(tool);
-              this.rewritedomain(tool);
+              this.rewritehost(tool);
               this.registry[tool.identifier] = tool
           });
           this.registry_loaded = true;
@@ -177,10 +177,10 @@ export default {
           }
           return data;
       },
-      rewritedomain: function (tool) {
+      rewritehost: function (tool) {
           if (tool.entryPoints !== undefined) {
               for (var i = 0; i < tool.entryPoints.length; i++) {
-                  if (tool.entryPoints.urlTemplate !== undefined) {
+                  if (tool.entryPoints[i].urlTemplate !== undefined) {
                       if ((this.env.REWRITE_HOST) && (tool.entryPoints[i].urlTemplate.includes('//' + this.env.REWRITE_HOST + '/')) && (this.env.REWRITE_HOST !== window.location.host)) {
                          tool.entryPoints[i].urlTemplate = tool.entryPoints[i].urlTemplate.replace('//' + this.env.REWRITE_HOST + '/', '//' + window.location.host + '/');
                       } else if (tool.entryPoints[i].urlTemplate.includes('//{host}/')) {
