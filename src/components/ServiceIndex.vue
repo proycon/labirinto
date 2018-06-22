@@ -87,6 +87,7 @@ export default {
           response.data['@graph'].forEach(tool => {
               console.log("Registered tool " + tool.identifier);
               this.resolve(tool);
+              this.rewritedomain(tool);
               this.registry[tool.identifier] = tool
           });
           this.registry_loaded = true;
@@ -175,6 +176,19 @@ export default {
               }
           }
           return data;
+      },
+      rewritedomain: function (tool) {
+          if (tool.entryPoints !== undefined) {
+              for (var i = 0; i < tool.entryPoints.length; i++) {
+                  if (tool.entryPoints.urlTemplate !== undefined) {
+                      if ((this.env.REWRITE_DOMAIN) && (tool.entryPoints[i].urlTemplate.includes('//' + this.env.REWRITE_DOMAIN + '/'))) {
+                         tool.entryPoints[i].urlTemplate = tool.entryPoints[i].urlTemplate.replace('//' + this.env.REWRITE_DOMAIN + '/', '//' + window.location.origin + '/');
+                      } else if (tool.entryPoints[i].urlTemplate.includes('//{hostname}/')) {
+                         tool.entryPoints[i].urlTemplate = tool.entryPoints[i].urlTemplate.replace('//{hostname}/', '//' + window.location.origin + '/');
+                      }
+                  }
+              }
+          }
       }
   }
 }
