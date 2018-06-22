@@ -181,10 +181,10 @@ export default {
           if (tool.entryPoints !== undefined) {
               for (var i = 0; i < tool.entryPoints.length; i++) {
                   if (tool.entryPoints.urlTemplate !== undefined) {
-                      if ((this.env.REWRITE_DOMAIN) && (tool.entryPoints[i].urlTemplate.includes('//' + this.env.REWRITE_DOMAIN + '/'))) {
-                         tool.entryPoints[i].urlTemplate = tool.entryPoints[i].urlTemplate.replace('//' + this.env.REWRITE_DOMAIN + '/', '//' + window.location.origin + '/');
-                      } else if (tool.entryPoints[i].urlTemplate.includes('//{hostname}/')) {
-                         tool.entryPoints[i].urlTemplate = tool.entryPoints[i].urlTemplate.replace('//{hostname}/', '//' + window.location.origin + '/');
+                      if ((this.env.REWRITE_DOMAIN) && (tool.entryPoints[i].urlTemplate.includes('//' + this.env.REWRITE_DOMAIN + '/')) && (this.env.REWRITE_DOMAIN != window.location.host)) {
+                         tool.entryPoints[i].urlTemplate = tool.entryPoints[i].urlTemplate.replace('//' + this.env.REWRITE_DOMAIN + '/', '//' + window.location.host + '/');
+                      } else if (tool.entryPoints[i].urlTemplate.includes('//{host}/')) {
+                         tool.entryPoints[i].urlTemplate = tool.entryPoints[i].urlTemplate.replace('//{host}/', '//' + window.location.host + '/');
                       }
                   }
               }
