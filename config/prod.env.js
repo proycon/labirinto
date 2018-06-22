@@ -9,5 +9,5 @@ module.exports = {
   LOGO_LEFT: 'true',
   ORGANIZATIONS: '["Radboud"]',
   DOMAINS: '[]',
-  REWRITE_DOMAIN: ""
+  REWRITE_HOST: ""
 }
