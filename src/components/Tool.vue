@@ -53,11 +53,14 @@
               <li v-if="tool.dateCreated" class="datecreated" v-tooltip="'Date First Created'"><icon name="clock"></icon>&nbsp;<span>{{tool.dateCreated}}</span></li>
               <li class="link" v-tooltip="'Raw metadata (Codemeta, JSON-LD), click to view'"><icon name="database" @click="$emit('show-metadata', tool)"></icon>&nbsp;<span @click="$emit('show-metadata', tool)">Metadata</span></li>
           </ul>
-          <ul v-if="tool.keywords" class="keywords" v-tooltip="'Keywords'">
+          <ul v-if="tool.keywords && tool.keywords.constructor === Array" class="keywords" v-tooltip="'Keywords'">
               <li v-for="keyword in tool.keywords" :key="keyword">{{keyword}}</li>
               <template v-if="tool.toolTask">
                   <li v-for="keyword in tool.toolTask" v-if="tool.keywords && tool.keywords.indexOf(keyword) == -1" :key="keyword">{{keyword}}</li>
               </template>
+          </ul>
+          <ul v-if="tool.keywords && tool.keywords.constructor !== Array" class="keywords" v-tooltip="'Keywords'">
+              <li>{{tool.keywords}}</li>
           </ul>
           <ul class="entrypoints">
               <li v-for="entrypoint in tool.entryPoints" v-if="matchEntrypoint(entrypoint)"  :key="(entrypoint.urlTemplate, entrypoint.interfaceType)" :class="entrypoint.interfaceType == 'WUI' ? 'actionable' : 'inactionable'">
