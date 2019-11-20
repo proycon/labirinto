@@ -38,8 +38,8 @@ export default {
   props: {
       showtoolbar: { type: Boolean, default: true },
       showdescription: { type: Boolean, default: true },
-      initial_filters: { type: Array, default: function () { return [ "thirdparty", "remote" ] } },
-      initial_interfaces: { type: Array, default: function () { return [ "WUI", "REST" ] } },
+      initial_filters: { type: Array, default: function () { return ["thirdparty", "remote"] } },
+      initial_interfaces: { type: Array, default: function () { return ["WUI", "REST"] } },
       initial_collapsed: { type: Boolean, default: false },
       hideheader: { type: Boolean, default: false },
       hidefooter: { type: Boolean, default: false }
