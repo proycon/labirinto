@@ -90,6 +90,20 @@ export default {
               this.rewritehost(tool);
               this.registry[tool.identifier] = tool
           });
+          //load remote registries
+          this.env.REMOTE_REGISTRIES.forEach(remoteregistry => {
+              axios.get(remoteregistry, config).then(response => {
+                  response.data['@graph'].forEach(tool => {
+                      this.resolve(tool);
+                      if (!this.env.REGISTRY_EXCLUDE.includes(tool.identifier) && (this.env.REGISTRY_INCLUDE.length == 0 || this.env.REGISTRY_INCLUDE.includes(tool.identifier))  && !(tool.identifier in tool.registry) && (tool.interfaces.includes("WUI") || tool.interfaces.includes("REST")) ) {
+                          console.log("Registered service from remote registry: " + tool.identifier);
+                          this.registry[tool.identifier] = tool;
+                      }
+                  });
+              }).catch(error => {
+                  console.log("Unable to obtain remote metadata registry from " + remoteregistry + " :" + error);
+              });
+          });
           this.registry_loaded = true;
           this.$forceUpdate();
       }).catch(error => {
@@ -103,8 +117,6 @@ export default {
       if (window.innerHeight > 500) {
           window.addEventListener('scroll', this.handleScroll);
       }
-      //console.log("My organizations:", this.env.ORGANIZATIONS);
-      //console.log("My domains:", this.env.DOMAINS);
   },
   computed: {
       tools: function () {
