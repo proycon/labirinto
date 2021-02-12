@@ -198,6 +198,9 @@ export default {
                       } else if (tool.entryPoints[i].urlTemplate.includes('//{host}/')) {
                          tool.entryPoints[i].urlTemplate = tool.entryPoints[i].urlTemplate.replace('//{host}/', '//' + window.location.host + '/');
                       }
+                      if ((this.env.FORCE_HTTPS) && (tool.entryPoints[i].urlTemplate.includes('http://'))) {
+                         tool.entryPoints[i].urlTemplate = tool.entryPoints[i].urlTemplate.replace('http://', 'https://');
+                      }
                   }
               }
           }

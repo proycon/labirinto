@@ -12,5 +12,6 @@ module.exports = {
   LOGO_LEFT: 'true',
   ORGANIZATIONS: '["Radboud"]',
   DOMAINS: '[]',
-  REWRITE_HOST: '""'
+  REWRITE_HOST: '""',
+  FORCE_HTTPS: 'true',
 }
