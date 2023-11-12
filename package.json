@@ -27,7 +27,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
-    "axios": "^0.21.1",
+    "axios": "^1.6.0",
     "sass-loader": "^10.1.1",
     "v-tooltip": "^2.0.2",
     "vue": "^2.6.10",
